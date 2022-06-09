@@ -1,0 +1,80 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="236px" height="371px" viewBox="-0.5 -0.5 236 371" content="&lt;mxfile&gt;&lt;diagram id=&quot;Ab6cjqUxwU54XQGv6cZY&quot; name=&quot;Page-1&quot;&gt;5VlLc9owEP41zLSXjOUHMccCIb10JtOkj5w6wl5AU2Mxskwgv74rLOOHHOK0Nsw0l8T7SWtpP+3LYuBM1rtbQTerLzyEaGBb4W7gTAe27flD/KuAfQYQ4pIMWQoWaqwA7tkzaNDSaMpCSCoTJeeRZJsqGPA4hkBWMCoEf6pOW/CouuqGLsEA7gMamegPFspVhvqeVeCfgS1X+crE0iNrmk/WQLKiIX8qQc7NwJkIzmX2tN5NIFLk5bxkerMXRo8bExDLNgrXmcKWRqm2Te9L7nNjIUTbtRjzGP+NIQ4/KRoryIzhm52phZK5C72xhKci0O/VK0kqlqBnab9QK5bU9M5vga9Bij1OEBBRybbV06D6UJfHeYXd+KBNb6bBdi7OQ3dGa9U7znBV29JR51xrl8uDbmRVX5EdhNaqUXfcRjs2DTIf2Bp4ihzMDFrFiq/nKe5hvEDiJjzi4jDghBT8RYB4IgX/DaWRYeDDfIEjIU1WoBYlWrijUoKID4htkVNHsAUhYXeScT1qezXmcvmpFPsaWpXC3rdePqO2jun+nV/umPypfPDK09KjJkk9T3faPQ/CPhdi3FpJSYmP5bFC7SAVeh3EgGPmgs7Doi3lbVJBFGGpgY7cy/eq7kVM9yIN7kU6cC/PsPVbnLBljEGFxSpZGpajTbj8mEY4CZEAzQaMyrEyl2GB/KQH1iwMlc5YQMKe6fygr9xho/LLYcfeeOBN1btSyZOsxBMj2rVLlVODhrpg3q0yPzKJHzUQb3dA/Ohy9WZoxpp/sbpr/VN+I6XsVuS61/JbJbsVya7P/NbAORldivShwfl3jGcV8ap9PlWheyim9vB8xZQQw/KzRZ3f4AHWpTzAN3i4V2m7zsWCxzLnwu7h7I8t6Stn73Rx9m0yTZ9l3XXOV9aJ2YF/BZliY4z2vp/y7lTdzXUbTsDuqcATs42c0Qid6/+mfFTL7o5nUO72xbj5rfQg0ndGuOO65yO8TRPbZUqtX2HYI9O7+kqpDV/iF/KuLoisZUbSUIj78pqGb85LJcYemDz2L+dg0mzkj1UesGEVL1HaNj+9gXqexuHhJu5kQ/wGXv06r2ao51DXrWJDe5xAtPglYIu0ffho0Fq7uFz4AQSNF5dz33M9xVC1s+4lOZJr+8rkrOk+I6/Rb+AMxeI3iuyGuPilx7n5Aw==&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 60 140 L 60 170" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 100 100 L 140 100" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 60 60 L 100 100 L 60 140 L 20 100 Z" fill="#dae8fc" stroke="#6c8ebf" stroke-miterlimit="10" stroke-dasharray="1 1" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="59.5" y="104.5">
+                Timeout?
+            </text>
+        </g>
+        <path d="M 60 30 L 60 60" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <ellipse cx="60" cy="25" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="15" y="0" width="90" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="59.5" y="14.5">
+                Unsigned msg
+            </text>
+        </g>
+        <path d="M 60 250 L 60 280" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 100 210 L 140 210" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 60 170 L 100 210 L 60 250 L 20 210 Z" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="59.5" y="214.5">
+                Valid ps?
+            </text>
+        </g>
+        <path d="M 60 310 L 60 340" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <rect x="20" y="280" width="80" height="30" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-style="italic" text-anchor="middle" font-size="12px">
+            <text x="59.5" y="299.5">
+                Sign
+            </text>
+        </g>
+        <ellipse cx="60" cy="345" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="0" y="350" width="120" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="59.5" y="364.5">
+                Return signed msg
+            </text>
+        </g>
+        <rect x="60" y="145" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="79.5" y="159.5">
+                False
+            </text>
+        </g>
+        <rect x="60" y="254" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="79.5" y="268.5">
+                True
+            </text>
+        </g>
+        <ellipse cx="145" cy="210" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="100" y="80" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="119.5" y="94.5">
+                True
+            </text>
+        </g>
+        <rect x="100" y="190" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="119.5" y="204.5">
+                False
+            </text>
+        </g>
+        <rect x="150" y="195" width="85" height="30" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="192" y="214.5">
+                Return error
+            </text>
+        </g>
+        <rect x="140" y="82.5" width="90" height="35" fill="#f8cecc" stroke="#b85450" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-style="italic" text-anchor="middle" font-size="12px">
+            <text x="184.5" y="104.5">
+                self_revoke()
+            </text>
+        </g>
+    </g>
+</svg>

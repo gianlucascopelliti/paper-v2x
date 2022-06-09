@@ -1,0 +1,14 @@
+restriction IsLatestTime:
+"All t #i . IsLatestTime(t)@i ==>
+    not (
+        Ex t2 #j . TimeIncrement(t2)@j & j<i 
+            & GreaterThan(t2, t) 
+        )"
+
+rule advance_time:
+[ !Time(t) ]
+--[ 
+    OnlyOnce(<'advance_time', t>)
+    , TimeIncrement(t + '1')
+]->
+[ !Time(t + '1') ]

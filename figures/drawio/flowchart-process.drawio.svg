@@ -1,0 +1,168 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="221px" height="701px" viewBox="-0.5 -0.5 221 701" content="&lt;mxfile&gt;&lt;diagram id=&quot;Ab6cjqUxwU54XQGv6cZY&quot; name=&quot;Page-1&quot;&gt;5Vtbj5s4FP41kbYvFWAg5LGZ6XRW2tWO2mraPlUETIJKcGTMTNJfXxvscDmeLJ3h0kleInyMsf1xLt85JjN0td1/oP5u8y8JcTKzjHA/Q9czy3I8l/8KwaEUmKZtlpI1jUMpqwSf4p9YCg0pzeMQZ40bGSEJi3dNYUDSFAesIfMpJY/N2yKSNGfd+WsMBJ8CP4HSL3HINqXUc4xKfovj9UbNbBqyZ+UHP9aU5KmcLyUpLnu2vnqMvDXb+CF5rInQ+xm6ooSw8mq7v8KJgFUhVo67eaL3uGSKU9ZlwLwc8OAnudy1XBc7KBhwyFGRzWInaInT8J0AuCG5ifmT0bXBW3AVcmEZyWkgnytnYj5dY3mX1BgxY22YXPkHTLaY0QO/geLEZ/FD8z358nWvj/dV++YXcut6GCz0R+GgZBMAAXD4HG8xyfnCbgAidEO2q5zPtoz4nq9IQmjRgUIfe1HA5Rmj5Aeu9biBh1cR7wn9bIPFpKZs3PmMYZoWEsswT6H3gCnD+5PAyF5LGavyQar9WDNoKdrUbFnJXgKl/TyV2sfsq1Cft45sfZMgievrvdSsonFQjZQvrTZINL/V+6phRasa14P6Io36TqW9Xaw4SXj8wD2pl+c01cuE6mVq1MvsQb0csNe/0x23Ux5kcJaJ0NbeOt8Un3/pJ/FamFnA9425WS7FfmMe9t7Jjm0chmLMkuIs/umvivFCH3YkTlmxZGc5c67Fs3JGsjJwm8DcpU7VfYMU9QG93YR+AZFfaJC3ekBePeOZlm3W7Lqy8v+z7IZdV2Y+pGW70LLNxWSBaUKmogFiOqriAhzuuUWHM9GBTLEnZf8nI/YAwdVyxwuuJnT1N36SnbvTW7QQRw5A3B7I6ynTHy24onlrswu42aGCq4YHZziJvlP8wN/1X2/AzlsEOPICHGgJ8MpzbEfoVURSppyVNQxi5tx6CzHThUWlRy/CDBLezzSfwiL7gBK1oYS+bShL01C7qXzbAEge3f8ISKJnMrVe0noda5iMPtkXwll1qCNvKtQ1ZO2/IkUjUY2vZYc06F5eCXHk5wkDsaWS92C0bWqHNO5vKGpneX9KHJmQ2SHbHc9LQrIznpdcaOzVnMpenUvxkhrUHatv1OXQO2FmT5NUp63C5aLkqNa7Oy6jmyeBKcvtUnhfyn/urfvRM2Rbw32GcqPoUurP6miw7kHQVB5EraZ1gNKK9htKUh6KWExS8E4GyAvbtVKnY7HU7kMNn1m3e3VqqDkHUVn1BGoIy2O7TPRzfTPuPv4zuudzRzx4QzB/hio35DHQXFMIHapShWCK8RGznIoXzc6fNrfUbN4xT+mFNsM8Zdga4cvhanMvtBizQIggHTufAiHSxNShEjYbkowLPPywnfEOP2yYIt8uzx3uFml0IdxoKLhh7nKBCj4f8XTP7sKZXmnlo07J7d7P7Z+ocrTCg7tovaQyd+ijymFDBvgKzyrdUc8qbZiVng8VcUc8q1RVw8m+CnDM8b4KcGBWLaqIZ6E0jjGi0sDMqVPO2jUW/wby4iP94jPkkxHkd9SzxZoMqJ6qWtBwan3ACvOrI6zRKfr0GnD1mup6BLF/XHmz+v9FGY+r/7eg978A&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <path d="M 45 140 L 45 170" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 85 100 L 125 100" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 45 60 L 85 100 L 45 140 L 5 100 Z" fill="#dae8fc" stroke="#6c8ebf" stroke-miterlimit="10" stroke-dasharray="1 1" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="104.5">
+                Timeout?
+            </text>
+        </g>
+        <path d="M 45 30 L 45 60" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <ellipse cx="45" cy="25" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="0" y="0" width="90" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="14.5">
+                Input message
+            </text>
+        </g>
+        <path d="M 85 210 L 125 210" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 45 250 L 45 280" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 45 170 L 85 210 L 45 250 L 5 210 Z" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="207.5">
+                Valid
+            </text>
+            <text x="44.5" y="221.5">
+                message?
+            </text>
+        </g>
+        <rect x="45" y="145" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="64.5" y="159.5">
+                False
+            </text>
+        </g>
+        <ellipse cx="130" cy="210" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="125" y="82.5" width="90" height="35" fill="#f8cecc" stroke="#b85450" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-style="italic" text-anchor="middle" font-size="12px">
+            <text x="169.5" y="104.5">
+                self_revoke()
+            </text>
+        </g>
+        <rect x="85" y="80" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="104.5" y="94.5">
+                True
+            </text>
+        </g>
+        <rect x="85" y="190" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="104.5" y="204.5">
+                False
+            </text>
+        </g>
+        <path d="M 45 360 L 45 390" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 85 320 L 125 320" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 45 280 L 85 320 L 45 360 L 5 320 Z" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="317.5">
+                Out of
+            </text>
+            <text x="44.5" y="331.5">
+                sync?
+            </text>
+        </g>
+        <rect x="45" y="256" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="64.5" y="270.5">
+                True
+            </text>
+        </g>
+        <path d="M 45 470 L 45 500" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 85 430 L 125 430" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 45 390 L 85 430 L 45 470 L 5 430 Z" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="434.5">
+                HB or V2V?
+            </text>
+        </g>
+        <path d="M 45 540 L 45 560" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <rect x="0" y="500" width="90" height="40" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-style="italic" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="517.5">
+                Time
+            </text>
+            <text x="44.5" y="531.5">
+                synchronization
+            </text>
+        </g>
+        <path d="M 45 640 L 45 670" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 45 560 L 85 600 L 45 640 L 5 600 Z" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="604.5">
+                ps in PRL?
+            </text>
+        </g>
+        <ellipse cx="45" cy="675" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="5" y="680" width="80" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="44.5" y="694.5">
+                Return true
+            </text>
+        </g>
+        <rect x="125" y="302.5" width="90" height="35" fill="#f8cecc" stroke="#b85450" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-style="italic" text-anchor="middle" font-size="12px">
+            <text x="169.5" y="324.5">
+                self_revoke()
+            </text>
+        </g>
+        <rect x="85" y="300" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="104.5" y="314.5">
+                True
+            </text>
+        </g>
+        <rect x="45" y="365" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="64.5" y="379.5">
+                False
+            </text>
+        </g>
+        <rect x="50" y="475" width="30" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="64.5" y="489.5">
+                HB
+            </text>
+        </g>
+        <rect x="45" y="645" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="64.5" y="659.5">
+                False
+            </text>
+        </g>
+        <path d="M 85 600 L 125 600" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <rect x="125" y="582.5" width="90" height="35" fill="#f8cecc" stroke="#b85450" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" font-style="italic" text-anchor="middle" font-size="12px">
+            <text x="169.5" y="604.5">
+                self_revoke()
+            </text>
+        </g>
+        <rect x="85" y="580" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="104.5" y="594.5">
+                True
+            </text>
+        </g>
+        <ellipse cx="130" cy="430" rx="5" ry="5" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="85" y="410" width="40" height="20" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="104.5" y="424.5">
+                V2V
+            </text>
+        </g>
+        <rect x="130" y="415" width="85" height="30" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="172" y="434.5">
+                Return true
+            </text>
+        </g>
+        <rect x="135" y="195" width="85" height="30" fill="none" stroke="none" pointer-events="all"/>
+        <g fill="rgb(0, 0, 0)" font-family="Helvetica" text-anchor="middle" font-size="12px">
+            <text x="177" y="214.5">
+                Return false
+            </text>
+        </g>
+    </g>
+</svg>

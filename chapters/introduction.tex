@@ -1,0 +1,128 @@
+\section{Introduction}
+
+\acp{ITS} are a key technology for innovation in transportation that link
+different modes of transportation and address safety, congestion, emissions,
+and efficiency problems. Increased connectivity in vehicles, called \ac{V2X}
+communication, incorporates digital interactions with other road users with
+potentially safety-critical impacts on the vehicle and its passengers.
+%  demand a secure and trustworthy infrastructure.
+% In the EU, the ETSI standard provides several 
+% to enable pseudonymity and
+% unlinkability to protect privacy and personal data. 
+% technical specification
+% documents, such as~\cite{etsi2021102940,etsi2022102941,etsi2012ts102942} to 
+% furthermore specify how certificates and pseudonymous certificates are 
+% to be utilized in \ac{V2X} communication.
+% can be used to achieve privacy goals. 
+As highlighted by Sedar et al.~\cite{sedar2023v2x_survey} there are many
+possible incentives for attackers to target \ac{V2X} systems, which range from
+personal interest (e.g. tracking or insuarance fraud) to geopolitical
+conflict (e.g. causing congestion or accidents).
+
+A large body of academic research and technical standards for \ac{V2X}
+communication focuses on privacy-preserving protocols to enroll and manage
+pseudonymous
+identities~\cite{whitefield2017privacy,desmoulins2019practical,larsen2021daa,etsi2021102940,etsi2022102941,brecht2018scms}.
+% Besides, recent publications based on \ac{DAA} propose
+% privacy-preserving \ac{V2X} schemes for road users, specifically vehicles, to
+% enroll in \acp{ITS} and manage their pseudonymous
+% identities~\cite{whitefield2017privacy,desmoulins2019practical,larsen2021daa}.
+The key argument for such protocols is that special care must
+be taken to ensure vehicle routes and patterns in their use of \ac{V2X}
+services must not be observable by other
+\ac{V2X} participants in the network.
+Yet,
+the central concern in transportation has always been road safety.
+% which should 
+%not be compromised by prioritizing privacy.
+In \ac{V2X} scenarios, road safety requires that
+misbehaving network participants, e.g., faulty or malicious vehicles
+% that attempt to flood the network with messages to drown out benign communication, or 
+that report inaccurate road and traffic conditions, can be identified and
+prevented from causing harm. For example, the US \ac{SCMS} defines revocation
+\emph{"an essential design objective"}~\cite{brecht2018scms}.
+
+In a practical working system, it must be possible to 
+\begin{inparaenum}
+    \item detect, and
+    \item punish 
+\end{inparaenum}
+such misbehaving participants by removing them from the network.
+%
+We identify a
+common shortcoming in existing privacy-preserving \ac{V2X} approaches, with
+respect to their capability to punish malicious or misbehaving actors after
+misbehavior connected to a participant's pseudonym is detected:
+Ensuring that this participant will not be able to communicate with other
+vehicles in the future and effectively \emph{revoking} all their existing
+credentials in a timely manner is either not guaranteed and avoidable by the
+attacker, or is inefficient and not scalable due to bandwidth and computational
+overheads.
+% When vehicles are detected to be malfunctioning or malicious, harm to other 
+% vehicles and passengers must be prevented by revoking any credentials the 
+% malicious vehicle is communicating with.
+% Depending on the utilized communication protocol, such credentials may be pseudonyms or
+% any type of certificate or vehicle identities, and we will simply refer to any such 
+% secret deployed to a vehicle used during communication as a credential.\fritz{Correct?}
+% these vehicles
+% must be excluded from interacting with \ac{ITS} infrastructure to maintain road
+% safety. 
+% Historically, the two common approaches to revoke credentials are \emph{active} and
+% \emph{passive} revocation: The former involves centrally revoking the vehicles'
+% pseudonymous identities and then propagating revocation information in the form
+% of \acp{CRL} to \ac{ITS} participants~\cite{intelligent2016ieee16092}, while in
+% the latter pseudonymous identities are left to expire and \acp{CRL} are used by
+% the infrastructure to prevent revoked vehicles from re-enrolling with the
+% \ac{ITS}~\cite{etsi2022102941}. As highlighted in recent
+% surveys~\cite{yoshizawa2022v2x_survey,wang2020certificate}, revocation
+% schemes for both approaches suffer from scalability issues, low
+% reactiveness, or both.
+%
+Indeed, recent surveys~\cite{yoshizawa2022v2x_survey,wang2020certificate}
+highlight that existing schemes based on active~\cite{brecht2018scms} or
+passive~\cite{etsi2022102941} revocation suffer from scalability issues, low
+reactiveness, or both.
+
+To address these challenges, we build upon decentralized revocation schemes
+based on
+self-revocation~\cite{whitefield2017privacy,desmoulins2019practical,larsen2021daa},
+which utilize a \ac{TC} embedded in vehicles for secure credential management.
+Self-revocation enables vehicles to self-certify and also self-revoke
+pseudonymous credentials, obsoleting most of the centralized public key
+infrastructure of current \ac{ITS} designs. This paper addresses a number of
+shortcomings of previous work, summarized by the following contributions:
+%
+\begin{enumerate}
+%
+    \item We design a secure self-revocation scheme that, in contrast to earlier
+work, can guarantee revocation with an upper bound on revocation time, without
+relying on a trusted time source in \acp{TC} (\Cref{chapter:design});
+%
+    \item We formalize and verify our design using the \tamarin{} prover
+\cite{meier2013tamarin}, showing that it provides strong guarantees on the
+revocation of credentials even in presence of a powerful adversary who drops
+and/or delays revocation requests (\Cref{section:design-verification});
+%
+    \item We evaluate the security, performance, and scalability of our design,
+showing that our approach guarantees prompt revocation and low utilization
+of %computational and network
+resources, even in the presence of network malfunctions and a high number of
+attackers, in difference to related work
+(\Cref{chapter:eval,chapter:discussion}).
+%
+    \item We discuss applicability of our revocation scheme to state-of-the-art
+    \ac{V2X} protocols, showing that it is compatible with current standards in
+    the EU and US, as well as \ac{DAA}
+    (\Cref{section:discussion-compatibility}).
+\end{enumerate}
+%
+% Beyond the use in \ac{ITS}, we believe that our scheme can be applied in
+% scenarios where many devices make use of shared resources in a
+% privacy-preserving but accountable way through pseudonymous identities, and
+% where efficient and timely revocation of misbehaving or malicious entities is
+% critical, e.g.,  in future 5G-edge scenarios or smart cities in general. 
+%\fritz{I cut the 'beyond v2x' part from the intro...can we still fit it somehow?}
+We provide the full formal specifications and an implementation of our design with this
+publication~\cite{supplMaterial}. 
+The most recent version of this artifact is also available on 
+GitHub\footnote{\url{https://github.com/EricssonResearch/v2x-self-revocation}}.

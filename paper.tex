@@ -1,0 +1,241 @@
+\documentclass[conference]{IEEEtran}
+% Add the compsoc option for Computer Society conferences.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference]{../sty/IEEEtran}
+
+
+% Badges
+\usepackage[available,functional,reproduced]{ndssbadges}
+
+\pagestyle{plain}
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\input{header.tex}
+\input{acros.tex}
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Efficient and Timely Revocation\\of V2X Credentials}
+
+
+% author names and affiliations
+% use a multiple column layout for up to three different
+% affiliations
+
+\newcommand{\affiliationkul}{
+  \affiliation{
+  \department{DistriNet, KU Leuven, Belgium}
+  \institution{}
+%   \city{Leuven}
+  \country{}
+%   \postcode{3001}
+  }
+}
+\newcommand{\affiliationeab}{
+  \affiliation{
+  \department{Ericsson Security Research, Sweden}
+  \city{}
+  \country{}
+  }
+}
+\newcommand{\affiliationulb}{
+  \affiliation{
+  \department{Ecole Polytechnique, BEAMS \& Cybersecurity Research Center, Universit\'e Libre de Bruxelles, Belgium}
+%   \institution{}
+%   \city{}
+  \country{}
+%   \postcode{1050}
+  }
+}
+
+
+\ifdefined\ANON
+\author{\em Anonymous Author(s)}
+\else
+\makeatletter
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
+
+\author{\IEEEauthorblockN{Gianluca Scopelliti}
+\IEEEauthorblockA{\textit{Ericsson Security Research} \\
+%Kista, Sweden \\
+\textit{DistriNet, KU Leuven} \\
+%Leuven, Belgium \\
+gianluca.scopelliti@ericsson.com}
+\and
+\IEEEauthorblockN{Christoph Baumann}
+\IEEEauthorblockA{\textit{Ericsson Security Research} \\
+%Kista, Sweden \\
+christoph.baumann@ericsson.com}
+\and
+\IEEEauthorblockN{Fritz Alder}
+\IEEEauthorblockA{\textit{DistriNet, KU Leuven} \\
+%Leuven, Belgium \\
+fritz.alder@acm.org}
+\linebreakand
+\IEEEauthorblockN{Eddy Truyen}
+\IEEEauthorblockA{\textit{DistriNet, KU Leuven} \\
+%Leuven, Belgium \\
+eddy.truyen@kuleuven.be}
+\and
+\IEEEauthorblockN{Jan Tobias M\"{u}hlberg}
+\IEEEauthorblockA{\textit{Universit\'e Libre de Bruxelles} \\
+%Brussels, Belgium \\
+\textit{DistriNet, KU Leuven} \\
+%Leuven, Belgium \\
+jan.tobias.muehlberg@ulb.be}
+}
+\fi
+
+% conference papers do not typically use \thanks and this command
+% is locked out in conference mode. If really needed, such as for
+% the acknowledgment of grants, issue a \IEEEoverridecommandlockouts
+% after \documentclass
+
+% for over three affiliations, or if they all won't fit within the width
+% of the page, use this alternative format:
+% 
+%\author{\IEEEauthorblockN{Michael Shell\IEEEauthorrefmark{1},
+%Homer Simpson\IEEEauthorrefmark{2},
+%James Kirk\IEEEauthorrefmark{3}, 
+%Montgomery Scott\IEEEauthorrefmark{3} and
+%Eldon Tyrell\IEEEauthorrefmark{4}}
+%\IEEEauthorblockA{\IEEEauthorrefmark{1}School of Electrical and Computer Engineering\\
+%Georgia Institute of Technology,
+%Atlanta, Georgia 30332--0250\\ Email: see http://www.michaelshell.org/contact.html}
+%\IEEEauthorblockA{\IEEEauthorrefmark{2}Twentieth Century Fox, Springfield, USA\\
+%Email: homer@thesimpsons.com}
+%\IEEEauthorblockA{\IEEEauthorrefmark{3}Starfleet Academy, San Francisco, California 96678-2391\\
+%Telephone: (800) 555--1212, Fax: (888) 555--1212}
+%\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
+
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+\IEEEoverridecommandlockouts
+\makeatletter\def\@IEEEpubidpullup{6.5\baselineskip}\makeatother
+\IEEEpubid{\parbox{\columnwidth}{
+    Network and Distributed System Security (NDSS) Symposium 2024\\
+    26 February - 1 March 2024, San Diego, CA, USA\\
+    ISBN 1-891562-93-2\\
+    https://dx.doi.org/10.14722/ndss.2024.24017\\
+    www.ndss-symposium.org
+}
+\hspace{\columnsep}\makebox[\columnwidth]{}}
+
+
+% make the title area
+\maketitle
+
+
+
+\begin{abstract}
+%\boldmath
+\input{chapters/abstract.tex}
+\end{abstract}
+% IEEEtran.cls defaults to using nonbold math in the Abstract.
+% This preserves the distinction between vectors and scalars. However,
+% if the conference you are submitting to favors bold math in the abstract,
+% then you can use LaTeX's standard command \boldmath at the very start
+% of the abstract to achieve this. Many IEEE journals/conferences frown on
+% math in the abstract anyway.
+
+% no keywords
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+%%\IEEEpeerreviewmaketitle
+
+
+\input{chapters/introduction.tex}
+\input{chapters/background.tex}
+\input{chapters/system-model.tex}
+\input{chapters/design.tex}
+\input{chapters/formal-verification.tex}
+\input{chapters/evaluation.tex}
+\input{chapters/discussion.tex}
+\input{chapters/conclusion.tex}
+
+
+% conference papers do not normally have an appendix
+
+
+\ifdefined\ANON
+\else
+\section*{Acknowledgments}
+This research is partially funded by the Research Fund KU Leuven, by the
+Flemish Research Programme Cybersecurity, and by the CyberExcellence
+programme of the Walloon Region, Belgium. This research has received
+funding under EU H2020 MSCA-ITN action 5GhOSTS, grant agreement no. 814035.
+This research is partially funded by a grant of the Research Foundation --- Flanders (FWO), under grant number 11E5120N.
+\fi
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtranS}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\bibliographystyle{IEEEtranS}
+\bibliography{bibliography}
+
+%\clearpage
+\appendices
+
+%\input{chapters/appendix/flowcharts-appendix.tex}
+\input{chapters/appendix/tamarin-appendix.tex}
+%\input{chapters/appendix/eval-appendix.tex}
+\input{chapters/appendix/markov-appendix.tex}
+\input{chapters/appendix/artifact-appendix.tex}
+
+% that's all folks
+\end{document}

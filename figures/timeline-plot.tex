@@ -1,0 +1,31 @@
+\begin{figure}[t]
+    \centering
+% https://tikz.dev/tikz-shapes#sec-17.10
+\vspace{-4.5ex} % hack to bring plot up, tikz introduces some unnecessary height here. We could also run it through pdfcrop first
+\begin{tikzpicture}[thick]
+  \tikzstyle{every node}=[draw,shape=circle]
+  
+  % \draw (0,0) node[circle,fill,inner sep=1pt] {} -- (6,0) node[circle,fill,inner sep=1pt,label=above:b](B){};
+  \draw [|->] (0,0) -- (7,0)
+      node[pos=0.10,circle,fill,inner sep=1pt,label={[label distance = -7pt]below:$t_{\mathsf{hb}}$}]{}
+      node[pos=0.30,circle,fill,inner sep=1pt,label={[label distance = -8pt]below:$t_{\mathsf{rev}}$}]{}
+      node[pos=0.60,circle,fill,inner sep=1pt,label={[label distance = -10pt]below:$t_{\mathsf{expd}}$}]{}
+      node[pos=0.90,circle,fill,inner sep=1pt,label={[label distance = -8pt]below:$t_{\mathsf{rcv}}$}]{}
+      node[pos=1.03,draw=none,label={[label distance = -17pt, font=\scriptsize]below:RA time $t$}]{};
+
+  \draw [decorate, decoration = {calligraphic brace, mirror}] (0.1*7,-0.5) -- (0.60*7,-0.5) node[midway,below,draw=none]{\small$\paramtt$};
+  \draw [decorate, decoration = {calligraphic brace, mirror}] (0.6*7,-0.5) -- (0.99*7,-0.5) node[midway,below,draw=none]{\small$\paramtt$};
+
+  \draw [->] (0.1*7, 0.5) -- +(0,-0.4) node[above=-6.57pt,draw=none, align=center, font=\scriptsize]{last usable\\HB generated};
+  \draw [->] (0.3*7, 0.5) -- +(0,-0.4) node[above=-1pt,draw=none, align=center, font=\scriptsize]{vehicle $v_i$\\is revoked};
+  \draw [->] (0.6*7, 0.5) -- +(0,-0.4) node[above=-13pt,draw=none, align=center, font=\scriptsize]{expiry date for\\ $v_i$'s V2V messages};
+  \draw [->] (0.9*7, 0.5) -- +(0,-0.4) node[above=-17pt,draw=none, align=center, font=\scriptsize]{V2V message from $v_i$\\processed by $v_j$};
+
+\end{tikzpicture}
+\vspace{-2ex} % hack to bring caption up, tikz introduces some unnecessary height here. We could also run it through pdfcrop first
+\caption{Timeline diagram showing times from \cref{section:design-properties}
+  and their relations. When estimating the worst-case revocation time,
+  $t_{\mathsf{hb}}$ would coincide with $t_{\mathsf{rev}}$ and
+  $t_{\mathsf{rcv}}$ would occur $\paramtt$ after $t_{\mathsf{expd}}$, i.e., $t_{\mathsf{rcv}}$ is $2\paramtt{}$ after $t_{\mathsf{rev}}$.}
+\label{fig:timeline}
+\end{figure}

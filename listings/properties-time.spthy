@@ -1,0 +1,19 @@
+// property (i)
+lemma effective_revocation [heuristic=o "oracle.py"]:
+" All msg ps t #i . MessageAccepted(msg, ps, t)@i ==> 
+    Ex tv #j . SystemInitialized(tv)@j & j<i
+    & not (
+        Ex ps2 t_rev #k . RevocationIssued(ps2, t_rev)@k 
+        & k<i 
+        & GreaterThan(t, t_rev + tv + tv)
+    )"
+
+// property (ii)
+lemma no_operations_after_timeout [heuristic=o "oracle.py"]:
+"All t #i . NewOperation(t)@i ==> 
+    Ex tv #j . SystemInitialized(tv)@j & j<i
+    & not (
+        Ex ps t_rev #k . RevocationIssued(ps, t_rev)@k
+        & k<i 
+        & GreaterThan(t, t_rev + tv) 
+    )"

@@ -1,0 +1,169 @@
+\documentclass[conference]{IEEEtran}
+% Add the compsoc option for Computer Society conferences.
+%
+% If IEEEtran.cls has not been installed into the LaTeX system files,
+% manually specify the path to it like:
+% \documentclass[conference]{../sty/IEEEtran}
+
+\pagestyle{plain}
+
+% *** Do not adjust lengths that control margins, column widths, etc. ***
+% *** Do not use packages that alter fonts (such as pslatex).         ***
+% There should be no need to do such things with IEEEtran.cls V1.6 and later.
+% (Unless specifically asked to do so by the journal or conference you plan
+% to submit to, of course. )
+
+
+% correct bad hyphenation here
+%\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\input{header.tex}
+\input{acros.tex}
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Demo: Efficient and Timely Revocation\\of V2X Credentials}
+
+
+\ifdefined\ANON
+\author{\em Anonymous Author(s)}
+\else
+\makeatletter
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
+
+\author{\IEEEauthorblockN{Gianluca Scopelliti$^{*\dagger{}}$, Christoph Baumann$^{*}$, Fritz Alder$^{\dagger{}}$, Eddy Truyen$^{\dagger{}}$, Jan Tobias M\"{u}hlberg$^{\ddagger{}\dagger{}}$}
+\IEEEauthorblockA{
+  \textit{$^{*}$Ericsson Security Research, Sweden;
+          $^{\dagger{}}$DistriNet, KU Leuven, Belgium;
+          $^{\ddagger{}}$Universit\'e Libre de Bruxelles, Belgium} \\
+  \textit{gianluca.scopelliti@ericsson.com}
+}
+}
+\fi
+
+\IEEEoverridecommandlockouts
+\makeatletter\def\@IEEEpubidpullup{6.5\baselineskip}\makeatother
+\IEEEpubid{\parbox{\columnwidth}{
+    Symposium on Vehicles Security and Privacy (VehicleSec) 2024 \\
+    26 February 2024, San Diego, CA, USA \\
+    ISBN 979-8-9894372-7-6 \\
+    https://dx.doi.org/10.14722/vehiclesec.2024.25002 \\
+    www.ndss-symposium.org
+}
+\hspace{\columnsep}\makebox[\columnwidth]{}}
+
+
+% make the title area
+\maketitle
+
+\begin{abstract}
+We present an interactive visual demo of our novel revocation scheme for V2X
+credentials, which is the first to guarantee an upper bound on revocation time
+in the presence of strong network attackers. The demo allows users to inspect
+the network state with a number virtual vehicles, attackers, and events such as
+network delays and service disruption.
+\end{abstract}
+
+\section{Introduction}
+
+State-of-the-art credential management systems for \ac{V2X} proposed in industry
+standards leverage \emph{pseudonymous} identities to protect the privacy of
+vehicles and their passengers~\cite{brecht2018scms,etsi2022102941}. However, as
+highlighted by recent
+surveys~\cite{wang2020certificate,yoshizawa2022v2x_survey}, such systems present
+several limitations with respect to \emph{revocation}, i.e., the capability to
+punish malicious or misbehaving actors after misbehavior connected to a
+participant's pseudonym is detected. To address these challenges, we have
+designed a novel revocation scheme based on
+self-revocation~\cite{scopelliti2024efficient}. Our scheme provides a
+formally-verified design that guarantees an upper bound on revocation time and
+ensures scalability even with a large numbers of vehicles and attackers in the
+network. In this interactive demo, we present a proof-of-concept implementation
+of our scheme applied to a simulated \ac{V2X} scenario.
+
+\section{Scheme Overview}
+
+In a typical \ac{V2X} scenario~\cite{brecht2018scms,etsi2022102941}, vehicles
+exchange information with each other to provide functionalities such as
+collision avoidance or assisted/autonomous driving. These messages are
+authenticated using pseudonymous credentials (\emph{pseudonyms} in short), which
+are issued by the \ac{V2X} infrastructure to vehicles upon successful
+authentication and authorization, and are rotated periodically to prevent
+long-term tracking of vehicles. Misbehaviour detection mechanisms are employed
+to detect and report misbehaving pseudonyms, which are then \emph{revoked} to
+preserve road safety.
+
+In our revocation scheme~\cite{scopelliti2024efficient}, a \ac{RA} is
+responsible for distributing periodic messages called \acp{HB}. Such messages
+have a two-fold purpose: First, they carry timing information that is used by
+vehicles to obtain a common notion of time, which can then provide freshness
+information to network messages. Second, \acp{HB} contain a list of pseudonyms
+to be revoked. Vehicles receiving a \ac{HB} first synchronize their local notion
+of time with the one included in the message, and then check if any of their
+pseudonyms is included in the \ac{HB}. If so, they perform
+\emph{self-revocation} of their credentials. In case malicious vehicles attempt
+to avert revocation, e.g., by dropping \acp{HB}, they will eventually become unable to
+communicate because their local time will not advance beyond the
+last \ac{HB} received. To make this scheme work, we require a \ac{TC} in each
+vehicle. This \ac{TC} is responsible for the management of credentials.
+
+\iffalse
+Furthermore, to deal with network attackers that may drop or delay \acp{HB},
+vehicles not receiving a \ac{HB} for a certain amount of time will eventually
+get de-synchronized, effectively becoming unable to participate in future
+\ac{V2X} communication. We formalized our scheme with the Tamarin
+prover~\cite{meier2013tamarin}: Assuming that each network message (either
+\ac{V2V} or \ac{HB}) has a validity period \paramtt{}, revocation is guaranteed
+to happen within $\paramteff{}=2*\paramtt{}$ after the revocation request is
+issued. Furthermore, we prove that each pseudonym added to the \ac{PRL} can be
+safely removed after a time $\paramtprl{}=\paramtt{}$, guaranteeing that the
+\ac{PRL} remains reasonably small.
+\fi
+
+\section{Demo Description \& Conclusions}
+
+We have developed a proof-of-concept implementation of our scheme in a simulated
+\ac{V2X} scenario running on Kubernetes. The demo consists of a number of
+virtual vehicles that exchange messages with each other on a small edge area.
+Attackers in the network can spread malicious information, affecting nearby
+vehicles. The demo also simulates a number of real-world events such as network
+delays and interruptions. The code is open source and available on
+Github\footnote{https://github.com/EricssonResearch/v2x-self-revocation}.
+
+The demo is made interactive by means of a web application where users, who play
+the role of a system administrator, can monitor the state of the network and
+trigger revocation requests%
+%(\cref{fig:webapp})
+. The application shows the state of the simulation at each time step (i.e.,
+each second), and users can go back and forth in time to inspect the state of
+the network. The application also shows the content of \ac{HB}
+messages sent by the \ac{RA}, as well as revocation times for pseudonyms.
+
+\iffalse
+\begin{figure}
+  \includegraphics[width=\columnwidth]{figures/webapp.PNG}
+  \caption{Screenshot of our simulation. The background shows a picture of the
+  \emph{Magic Roundabout} in Swindon, UK, which is a good example of a small but
+  busy edge area.}
+  \label{fig:webapp}
+\end{figure}
+\fi
+
+% \section{Conclusions}
+
+This proof-of-concept demo shows the effectiveness of our revocation scheme in a
+simulated but realistic \ac{V2X} scenario.
+
+\bibliographystyle{IEEEtranS}
+\bibliography{bibliography_demo}
+
+% that's all folks
+\end{document}

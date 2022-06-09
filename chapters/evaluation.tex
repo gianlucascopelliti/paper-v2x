@@ -1,0 +1,423 @@
+\section{Evaluation}
+\label{chapter:eval}
+
+In this section, we evaluate our scheme and give additional insights.
+\cref{section:eval-sim} focuses on property \ref{property:revoke}, showing
+experimental results on revocation time obtained from simulating different
+attackers and network conditions (\ref{obj:revocation}).
+\cref{section:eval-prl-size} demonstrates that, thanks to property
+\ref{property:prl}, the \ac{PRL} is kept small even with a high number of
+revocations, proving the scalability of our approach (\ref{obj:scalability}).
+Finally, \cref{section:eval-tv} discusses how \paramtt{} should be chosen, based
+to the characteristics of the network and the desired security and efficiency
+properties (\ref{obj:adaptability}).
+
+%As introduced in \cref{chapter:background}, vehicular networks must be able to
+%support high density areas with up to 4,300 vehicles per square kilometer. In
+%order to handle such traffic, this requires an extensive coverage of
+%infrastructural components such as \acp{RSU}. Our evaluation focuses on a small
+%edge area covered by one single \ac{RSU}, which provides connectivity to
+%\simvehicles{} vehicles at the same time.
+
+\subsection{Revocation Time}
+\label{section:eval-sim}
+
+We implemented a full prototype that realizes the revocation scheme from
+\cref{chapter:design} and we evaluated it on a simulated \ac{V2X} network
+running on Kubernetes~\cite{kubernetes}. The simulation environment allows to
+approximate the average revocation time for a range of network parameters in
+order to demonstrate the effectiveness of our scheme. Additionally, we simulated
+network malfunctions such as delays and packet losses, to show that our approach
+is resilient against real-world conditions. Code and configuration files are
+available online~\cite{supplMaterial}.
+
+\noindent\textbf{\emph{Implementation.}}
+%
+Due to the lack of open-source \ac{V2X} implementations, we implemented a custom
+\ac{V2X} protocol based on \cite{jangid2022towards}, in which a group symmetric
+key is shared among all vehicles to sign and verify \ac{V2V} messages. In
+addition, \acp{TC} are able to autonomously generate their own pseudonyms
+(similar to \cite{whitefield2017privacy,desmoulins2019practical}), which are
+random identifiers attached to messages as metadata. Thus, all \ac{V2V} messages
+are linked to the (pseudonymous) identity that signed them, allowing for the
+revocation of bad actors' credentials. This protocol satisfies all requirements
+of our revocation scheme (cf.~\cref{section:system-model}), but may not be
+practical for real-world use cases. Still, it allows us to obtain realistic
+average revocation times for different attacker models, numbers of vehicles,
+network conditions, and validity windows \paramtt{}.
+
+In our prototype, vehicles are grouped into one or more edge areas, while a
+centralized infrastructure is responsible for enrollment (via an Issuer) and
+revocation (via a \ac{RA}). Besides, on each edge area a \ac{RSU} is responsible
+for fetching the latest \ac{HB} from the \ac{RA} and broadcasting it to all
+vehicles in the area. Furthermore, an edge area is divided into groups to
+simulate proximity, so that a vehicle broadcasts \ac{V2V} messages only to its
+neighbors, i.e., other vehicles currently located in the same group. Each
+vehicle has two components: the untrusted host, or \ac{OBU}, and the \ac{TC}.
+The latter is implemented as a passive device that exposes the following API to
+the \ac{OBU}: \funcjoin{} to enroll in the network, \funcissue{} to generate a
+new pseudonym, \funcsign{} and \funcverify{} to sign and verify \ac{V2V}
+messages, and \funcheartbeat{} to process a \ac{HB}. In our prototype,
+\funcjoin{} enrolls a vehicle in the network, after which the \ac{TC} obtains: %
+%
+\begin{inparaenum}
+    \item the \ac{RA}'s public key, needed to authenticate the \acp{HB},
+    \item the \ac{V2V} group credential, needed to sign and verify \ac{V2V}
+    messages,
+    \item a long-term identifier, and
+    \item the current timestamp used for synchronization.
+\end{inparaenum}
+
+\ac{V2V} messages are randomly-generated data, signed and verified using the
+symmetric group key. Revocation is triggered by reporting pseudonyms to the
+\ac{RA}, who eventually adds them to the \ac{PRL} via the \funcrevokedaa{}
+API. A \emph{reporter} component inspects the
+\ac{V2V} traffic in each area and periodically reports a random pseudonym.
+
+\noindent\textbf{\emph{Attackers.}}
+%
+We implemented different behaviors for the \ac{OBU}, depending on how \acp{HB}
+are processed and relayed to the \ac{TC}. In particular, we simulated attackers
+trying to evade revocation by dropping or delaying the \acp{HB}. Our goal was to
+show that our properties actually hold in practice
+(\cref{section:design-properties}), but also that the average revocation time
+can be significantly improved with some extensions
+(\cref{section:design-extensions}). To this end, we implemented three main
+attacker levels:
+%
+\begin{itemize}
+    \item \attackerhonest: Simulates normal behavior as a baseline, i.e.,
+      the \ac{OBU} relays all \acp{HB} to the \ac{TC} as soon as they are
+      received from the \ac{RSU};
+    \item \attackersmart: The \attackersmart{} attacker delivers \acp{HB}
+      normally as long as none of its pseudonyms are in the \ac{PRL}. However,
+      it attempts to evade revocation by dropping all \acp{HB} that contain any
+      of its pseudonyms;
+    %\item \attackersmarter: The \attackersmarter{} attacker is similar to the
+    %  \attackersmart{} one, with the only difference that \acp{HB} that do not
+    %  contain any of the vehicle's pseudonyms are delivered with a delay equal
+    %  to \paramtt, in order to postpone the expiration of the auto-revocation
+    %  timeout\christoph{check terminology} \paramtout{} (\cref{eq:auto-rev-a}). For the scenarios that do not
+    %  use time\christoph{rephrase?}, instead, the behavior is the same as the \attackersmart{}
+    %  attacker.
+    \item \attackerblind{}: Simulates a scenario where \acp{HB} are encrypted
+    (\cref{section:design-extensions}), thus attackers have no access to their
+    content and do not know if and when their pseudonyms will get revoked.
+    Therefore, the \attackerblind{} attacker has to make a guess on whether to
+    deliver or drop a \ac{HB}. We tried several logics for this attacker, and
+    the one with best results was the attacker relaying only one \ac{HB} every
+    \paramtt{}, to allow clock synchronization and prevent revocation to be
+    triggered automatically (\cref{eq:auto-rev}).
+\end{itemize}
+
+\noindent\textbf{\emph{Experimental setup.}}
+%
+%\input{tables/scenarios.tex}
+%
+We ran our simulations on a Kubernetes \cite{kubernetes} cluster with version
+1.22.17. Up to \simvehicles{} simulated vehicles are scheduled on 8 worker
+nodes, each with Intel(R) Xeon (R) CPU E5-2680 v4 @ 2.40GHz and two 10Gbps
+network interfaces, and 168 GB of total available memory.
+
+We evaluated several scenarios with different values for \paramtt{}, with or
+without trusted time in \acp{TC}. In this paper we only discuss a scenario
+without trusted time where \paramtt{} is equal to 30 seconds, resulting in a
+\paramteff{} and \paramtprl{} of 60 and 30 seconds, respectively, according to
+\cref{eq:effective-revocation,eq:t-prl}. Complete simulation results are
+provided with our artifacts~\cite{supplMaterial}.
+
+Each simulation ran for two hours and spawned \simvehicles{} vehicles over a
+single edge area, divided into \simgroups{} groups. Of the vehicles,
+\simattackers{} were malicious, using one of the attacker levels described
+above. Each vehicle could have only two concurrent pseudonyms, disabling
+pseudonym rotation to not create bias on the revocation time. A new \ac{HB} was
+generated every second by the \ac{RA}, and every second the \ac{RSU} fetched and
+distributed the latest \ac{HB} to vehicles. In order to simulate network
+malfunctions and denial of service attacks, the \ac{RSU} either dropped or
+delayed \acp{HB}, 
+%with probability \simdroprate{} and
+%\simdelayrate{} respectively
+each with probability \simdroprate, such that only \simcorrectrate{} of the
+\acp{HB} were delivered to vehicles without delay. Also, vehicles generated and
+distributed \ac{V2V} messages every second. To increase the number of
+\funcverify{} events, messages from malicious vehicles had a \simreplayrate{}
+probability to be replayed. A pseudonym was reported and revoked every
+\simrevocationrate{} seconds to gather sufficient experimental data (more than
+\simrevocations{} revocations).
+
+
+\begin{figure}[t]
+    %\centering
+    \hspace*{-0.3cm}
+    \resizebox{1.05\linewidth}{!} {
+      \input{figures/eval-simulation.tex}
+    } \caption{Simulation results for $\paramteff{} = 60 s$. The boxes show, for
+    each revoked pseudonym, the time between \funcrevokedaa{} and the last
+    \funcverify{} event, aggregating more than \simrevocations{} revocations but
+    excluding negative values.}
+    \label{fig:eval-sim-base}
+\end{figure}
+
+\noindent\textbf{\emph{Results.}}
+%
+The box plots in \cref{fig:eval-sim-base} illustrate the distribution of
+revocation times for each attacker level. An additional box plot labeled
+\attackersmartprl{} shows simulation results under a \attackersmart{} attacker,
+where \acp{TC} use the \ac{PRL} to perform active revocation, as described in
+\cref{section:design-extensions}. Each value represents the time between the
+revocation of a pseudonym \ps{} (\funcrevokedaa{} event) and the last \ac{V2V}
+message signed with \ps{} that was verified by a non-malicious \ac{TC}
+(\funcverify{} event). Such time period represents the \emph{effective
+revocation time} for that particular pseudonym
+(cf.~\cref{section:system-model}).
+
+It should be noted that we filtered out negative time values from the results:
+such values represent a situation where the last \funcverify{} event happened
+\emph{before} the \funcrevokedaa{} event, for example because the \ac{TC} owner
+of the revoked pseudonym was already in a revoked state due to the revocation of
+another of its pseudonyms, or simply because that pseudonym was not used to sign
+messages in the time after \funcrevokedaa{}. Either way, these values were not
+interesting for our evaluation.%\christoph{maybe skip this paragraph for space?}
+
+\cref{fig:eval-sim-base} shows that pseudonyms belonging to \attackerhonest{}
+vehicles are revoked rather quickly. Still, as \ac{V2V} messages have a validity
+period of \paramtt{} and receiving vehicles' internal time may lag behind the RA
+within \paramtt{}, the effective revocation time varied widely, with a median of
+\simhonestmedian{} seconds.
+
+The simulation with the \attackersmart{} attacker level resulted in a median of
+\simsmartmedian{} seconds and the majority of revocations between \simsmartmin{}
+and \simsmartmax{} seconds. %As explained earlier, 
+This attacker is able to
+postpone revocation by dropping \acp{HB}, yet %but on the other side
+not relaying
+fresh \acp{HB} eventually causes de-synchronization in the \ac{TC}. Therefore,
+in 99\% of cases revocation was effective within 2/3 of \paramteff{},
+as honest vehicles were able to stay synchronized with the infrastructure
+even when simulating severe network malfunctions.
+
+As for the \attackerblind{} attacker level, we experienced a higher number of
+negative values in our results. This can be explained by the fact that a
+\attackerblind{} \ac{OBU} is not able to recognize which \acp{HB} can be dropped
+or delayed, which ones are fresh and which are old, and which ones can be
+delivered to the \ac{TC} without causing revocation. As a result, and
+considering the network malfunctions we simulated, the \ac{TC} is more likely to
+get de-synchronized and thus automatically revoked, even before revocation is
+mandated by the \ac{RA}. This suggests that encrypting \acp{HB} makes it more
+difficult for an attacker to evade revocation. In the few cases where the
+vehicle was still operating after the \funcrevokedaa{} event, instead,
+revocation rarely took longer than \paramtt{}.%\christoph{if we remove the other paragraph we need to explain here that negative values are omitted}
+
+Finally, the \attackersmartprl{} simulation showed a significant improvement
+over the \attackersmart{} one, with values more evenly distributed between
+\simsmartprlmin{} and \simsmartprlmax{} seconds and median of
+\simsmartprlmedian{} seconds. However, these results were negatively affected by
+our simulated network malfunctions. As with traditional \acp{CRL}, the ability
+of a \ac{TC} to discard messages coming from revoked vehicles depends on how
+quickly \acp{HB} are received and processed; Thus, with limited connectivity the
+effective revocation time increases. Indeed, we experienced better results when
+simulating scenarios with lower drop/delay rates for \acp{HB}.
+
+Overall, our simulations showed the feasibility of our revocation scheme in a
+simulated though practical scenario. In the average case, revocation takes much
+less than \paramteff{} to be effective, even when attackers attempt to evade it.
+Furthermore, simulating network malfunctions did not incur permanent
+de-synchronization of non-malicious vehicles, demonstrating the resiliency
+of our approach under real-world conditions.
+ 
+\subsection{Size of PRL}
+\label{section:eval-prl-size}
+
+The size of a heartbeat is not constant.  Instead, it depends on the size of the
+\ac{PRL}, which varies over time according to the number of pseudonyms revoked
+and the parameter $T_{prl}$ (\cref{eq:t-prl}). If many pseudonyms are revoked at
+the same time, the \ac{PRL} will be large until $T_{prl}$ time has passed and
+they are evicted from the \ac{PRL} again. To calculate the expected average
+\ac{PRL} size, we approximate adding and removing pseudonyms from the list as a
+stochastic process and create a Markov model based on these parameters. The
+stationary distribution of this Markov chain then gives the probabilities for
+each given size of the \ac{PRL} after an arbitrary number of steps.
+
+Below, we elaborate on the core formulas and the expected values of the \ac{PRL}
+size for a chosen set of parameters. Appendix~\ref{appendix:markov} contains a
+complete explanation of the utilized probabilities, the Markov model, and a
+discussion of the nuances of modelling the \ac{PRL} size as a probabilistic
+process.
+
+\noindent\textbf{\emph{PRL as a Markov Model.}}
+%
+The process of adding and removing pseudonyms from the \ac{PRL} can be seen as a
+finite state machine where the states are the possible sizes of the list.
+Transitions to a higher or lower state then happen on the addition or removal of
+a pseudonym, w.r.t.~a base revocation probability $p$ per pseudonym and time step.  
+%In this mental model, the next step in the state
+%machine only depends on the current state as well as the parameters describing a
+%possible state transition and is independent of the history of the state machine
+%before the currently observed state.  
+A discrete time Markov chain describes the probability of moving
+from state $i$ to state $j$ for each possible state~\cite{hermanns2002markov}.
+%The key insight of modelling the PRL as such, if seen as a sequence of probabilistic
+%events, we can see the PRL as a Markov model that combines probabilities for
+%gaining and losing pseudonyms from the list.
+As such, this Markov model represents the probabilities for gaining and losing
+pseudonyms from the PRL due to revocation or the removal of pseudonyms after
+$\paramtprl{}$, respectively.
+%
+%\todo[inline]{What are these events, revocation events?}
+%
+Assuming that the PRL contains $i$ out of $n$ possible pseudonyms at a time
+step, we can independently model the probabilities of gaining and losing $k$
+pseudonyms as two distinct binomial probabilities $G_{i,k}$ and $L_{i,k}$,
+respectively: % as follows:
+\begin{equation}
+    \label{eq:prl-size-g}
+    G_{i,k} = \binom{n-i}{k} \cdot p^k \cdot (1-p)^{n-i-k}  
+\end{equation}
+\begin{equation}
+    \label{eq:prl-size-l}
+    L_{i,k} = \binom{i}{k} \cdot (\frac{1}{\paramtprl{}})^{k} \cdot (1-\frac{1}{\paramtprl{}})^{i-k} 
+\end{equation}
+Observe that $G_{i,k}=0$ if $i+k>n$ and $L_{i,k}=0$ if $i<k$.  We can then
+combine these binomial probabilities into a Markov matrix with the following
+property:
+\begin{align}
+    \label{eq:prl-size-markov}
+    p_{i,j} = \sum_{l=Max(i-j, 0)}^{i} L_{i,l} \cdot G_{i,l-i+j}
+\end{align}
+
+At its core, this Markov matrix contains all probabilities of moving from list
+size $i$ to list size $j$ as a combination of losing $l\leq i$ pseudonyms from
+the list and adding $l-i+j\leq j$ new ones,   
+%Technically, this models the non-deterministic process 
+%of removing pseudonyms after $T_{prl}$ time steps as a
+%probabilistic process 
+where in each time step, a pseudonym is removed from the list with probability
+$\frac{1}{\paramtprl{}}$ and added with probability $p$.  While this is not
+reasonable to calculate the effective list size after a specific number of
+steps, it suffices in a probabilistic model to determine the expected, average
+list size.
+
+\noindent\textbf{\emph{Average size of the PRL.}}
+%
+In Markov chains, a stationary distribution is a state probability that
+maintains its distribution even after taking a step in the Markov
+chain~\cite{hermanns2002markov}, represented by the stationary vector of the
+Markov matrix. It is thus a probabilistic equilibrium that, once reached, will
+be stable forever.  After startup, a Markov chain will eventually reach its
+stationary distribution after enough steps have been taken.  We can calculate
+the equilibrium for our Markov chain for parameters that are useful in the real
+world and for different revocation probabilities. By accumulating the
+probabilities for each given state, we can thus calculate the maximum list size
+as a percentile of possible states.
+
+We evaluate the impact of a growing share of attackers on the PRL size in
+the context of two baseline scenarios. In these scenarios,
+\textit{honest} pseudonyms, i.e., pseudonyms in the network that do not belong
+to attackers, may still experience a seldom revocation due to erroneous
+behavior, e.g., due to a faulty sensor. In the first baseline scenario, we
+consider a $1\%$ probability that a pseudonym gets revoked at least once within
+a day, i.e., a $1\%$ chance for an expected revocation every 86400 time steps of
+one second each. In the second scenario, we raise this to the extreme case of a
+$99\%$ probability of being revoked at least once a day or 86400 time steps.
+
+\Cref{fig:eval-prl-size} depicts the 75th, 90th, and 99.99th percentiles of the
+\ac{PRL} sizes for these two scenarios.  The plot uses the parameters of $n=800$
+pseudonyms and $\paramtprl{}=30$, to align with the evaluation described in
+\cref{section:eval-sim}.  Each honest lifetime scenario is paired with a growing
+share of attackers in the network. Attackers are modeled to
+have a $75\%$ chance of causing a pseudonym revocation every 30 minutes on
+average, which simulates a strain on the \ac{PRL} that is by magnitudes larger
+than any honest pseudonym would normally incur.
+
+In most situations, the \ac{PRL} contains fewer than 10 and 12
+pseudonyms for the two baseline scenarios, respectively. Even
+with a share of 20\% of network participants that cause revocations heavily, the
+99.99th percentile of \ac{PRL} size still stays below 17. This means that
+even for coordinated peak revocation events, the \ac{PRL} size
+will stay in very manageable margins. For comparison, we estimated the expected
+number of revocations over a day: they range from roughly 8 to 10500 for Scenario
+1, and 3600 to 13500 for Scenario 2 -- a worst case average of one revocation
+every 6-8s.
+
+\input{figures/eval-prl-size.tex}
+
+\subsection{Choice of \paramtt{}}
+\label{section:eval-tv}
+
+\begin{figure}[t]
+  %\centering
+  \hspace*{-0.3cm}
+  \resizebox{\linewidth}{!} {
+    \input{figures/tv-distribution.tex}
+  } \caption{Evaluation of the impact of \paramtt{} on the \ac{V2X} system. The
+  X axes show the value of \paramtt{} in seconds.}
+  \label{fig:eval-tv}
+\end{figure}
+
+The choice of \paramtt{} is crucial in our scheme. We evaluated four reference
+values of 30, 150, 300 and 900 seconds and visualize the results in
+\cref{fig:eval-tv}. Below, we discuss the impact of \paramtt{} across multiple
+dimensions. 
+
+\noindent\textbf{\emph{Revocation time.}}
+%
+The first dimension is related to the revocation time, and is shown in the
+top-left plot of \cref{fig:eval-tv}. According to
+\cref{eq:effective-revocation}, the effective revocation time \paramteff{} is
+linearly dependent on \paramtt{}. Therefore, the smaller \paramtt, the shorter
+it takes to revoke, resulting in a safer system.
+
+\noindent\textbf{\emph{\ac{HB} frequency.}}
+%
+The frequency with which \acp{HB} are generated and distributed by the \ac{RA}
+is not fixed arbitrarily, but depends on \paramtt{}. Here, it is essential to
+ensure that honest vehicles remain loosely synchronized with the infrastructure
+during their operation. This means that, to avoid temporary service
+interruption, \acp{TC} need to process \emph{at least} one \ac{HB} every
+\paramtt{} (cf.~\cref{chapter:design}). Thus, the frequency of \acp{HB} is
+inversely proportional to the value of \paramtt{} with a certain coefficient
+$N$, which accounts for network latencies and missing packets. The top-right
+plot of \cref{fig:eval-tv} shows the frequency with coefficient $N = 30$, i.e.,
+a new \ac{HB} is generated every $\paramtt / 30$ seconds. With larger
+\paramtt{}, the number of \acp{HB} per minute drastically decreases, resulting
+in fewer resources used.
+
+\noindent\textbf{\emph{\ac{HB} size.}}
+%
+According to \cref{eq:heartbeat-format}, the size of a \ac{HB} is linearly
+dependent on the size of the \ac{PRL}, plus a constant value that represents the
+sizes of timestamp \paramthb{} and digital signature \funcsignature{}.
+Additionally, as discussed in \cref{section:eval-prl-size}, the size of the
+\ac{PRL} is directly impacted by the value of \paramtt{}. That is, the higher
+\paramtt{} is chosen, the longer each pseudonym needs to stay in the \ac{PRL},
+according to \cref{eq:t-prl}. This means that, on average, \acp{HB} are bigger
+when \paramtt{} increases. The bottom-left plot of \cref{fig:eval-tv} shows the
+\ac{HB} size when varying \paramtt{}, considering the 99.99 percentile of the
+\ac{PRL} size in relation to \paramtt{} on the worst case scenario, i.e.,
+Scenario 2 with 800 pseudonyms and 20\% of attackers in the network
+(cf.~\cref{fig:eval-prl-size}). We also assume that a pseudonym identifier is 64
+bytes, \paramthb{} is 8 bytes, and we overestimate the size of \funcsignature{}
+to 512 bytes, which is higher than most RSA and elliptic curve
+signatures~\cite{nistDSS}.
+
+\noindent\textbf{\emph{Network bandwidth.}}
+%
+Lastly, it is important to evaluate the network bandwidth required for
+transmitting \acp{HB}. This can be computed by multiplying the size of a \ac{HB}
+by the frequency with which \acp{HB} are distributed. Results show that the
+minimum bandwidth needed to transmit \acp{HB} is rather small, i.e., around 12
+KBit/s in the worst-case scenario and with large $N$.
+
+\noindent\textbf{\emph{Conclusions.}}
+%
+The choice of \paramtt{} should be a good compromise between security and
+usability. The smaller \paramtt{} is, the shorter a revocation takes, but it
+also increases the resources used and the risk of de-synchronization in honest
+vehicles. Besides, a small \paramtt{} is feasible when the \ac{V2X} network is
+reliable and low-latency, e.g., in urban areas, but may not be always practical,
+e.g., in rural areas. On the other hand, a large \paramtt{} results in a more
+resilient and efficient \ac{V2X} system at the cost of a slower revocation.
+However, compared with passive revocation
+(cf.~\cref{section:discussion-comparison}), even \paramteff{} values of 30
+minutes are a significant improvement on the revocation time, coming at
+negligible cost, as shown in \cref{fig:eval-tv}.

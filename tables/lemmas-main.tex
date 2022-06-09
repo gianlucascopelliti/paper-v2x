@@ -1,0 +1,45 @@
+\begin{table*}
+    \renewcommand{\arraystretch}{1.2}
+    \newcolumntype{L}{>{\raggedright\arraybackslash}X}
+      \centering
+      \begin{tabularx}{.97\linewidth}{ | l | c | c | c | L | }
+        \hline
+        Lemma                                                     & Type   &  Oracle      & Steps & Description  \\
+        \hline
+        \hline
+        \tamrule{sign\_possible}                                  & S      &              & 5     & Ensures that the \ac{TC} can sign \ac{V2V} messages \\
+        \hline
+        \tamrule{generate\_hb\_possible}                          & S      &              & 5     & Ensures that the \ac{RA} can generate and distribute \acp{HB} \\
+        \hline
+        \tamrule{issue\_revocation\_possible}                     & S      &              & 5     & Ensures that the \ac{RA} can revoke pseudonyms, adding them to the \ac{PRL} \\
+        \hline
+        \tamrule{processing\_hb\_possible}                        & S      & \faCheck     & 7     & Ensures that the \ac{TC} can receive and process a \ac{HB} \\
+        \hline
+        \tamrule{revocation\_possible}                            & S      & \faCheck     & 10    & Ensures that the \ac{TC} can self-revoke when receiving a \ac{HB} \\
+        \hline
+        \tamrule{process\_message\_possible}                      & S      &              & 7     & Ensures that a third entity can process \ac{V2V} messages signed by the \ac{TC}  \\
+        \hline
+        \tamrule{exists\_par\_tv\_5}                              & S      &              & 8     & Used to verify that \paramtt{} is arbitrary \\
+        \hline
+        \tamrule{exists\_par\_tv\_8}                              & S      &              & 11    & Used to verify that \paramtt{} is arbitrary \\
+        \hline
+        \tamrule{no\_signing\_after\_revocation}                  & F      &              & 2     & Ensures that the \ac{TC} cannot make signatures after performing self-revocation \\
+        \hline
+        \tamrule{all\_heartbeats\_processed\_within\_tolerance}   & F      & \faCheck     & 130   &  Ensures that the \ac{TC} correctly discards outdated \acp{HB}, i.e., older than \paramtt{} \\
+        \hline
+        \tamrule{all\_signatures\_max\_time\_t\_rev}              & F      & \faCheck     & 156   & Ensures that, if revocation is mandated at time \paramtrev, the \ac{TC} cannot make valid \ac{V2V} messages with timestamp greater than \paramtrev{} \\
+        \hline
+        \tamrule{effective\_revocation}                           & P      & \faCheck     & 1964  & Verifies property \ref{property:revoke} in \cref{section:design-properties} \\
+        \hline
+        \tamrule{no\_heartbeats\_processed\_after\_tolerance}     & P      & \faCheck     & 100   & Verifies property \ref{property:prl} in \cref{section:design-properties} \\
+        \hline
+      \end{tabularx}
+      \vspace{0.2cm}
+      \caption{Full list of lemmas proven with \tamarin{} on our model. \emph{Type} is either
+      \emph{S} (sanity), \emph{F} (functional) or \emph{P} (proof). \emph{Oracle} indicates whether
+      an oracle was needed, while \emph{Steps} shows the number of steps required by \tamarin{} to prove the
+      lemma.}
+      \label{tbl:tamarin-lemmas-main}
+      %\vspace{-5mm}
+    \end{table*}
+    %

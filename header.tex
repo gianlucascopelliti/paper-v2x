@@ -1,0 +1,211 @@
+% Uncomment to enable anonymous submission
+%\newcommand*{\ANON}{}%
+% Uncomment to make the paper "submission-ready"
+\newcommand*{\SUBMISSION}{}%
+
+%  Hide URLs for anonymous submission
+\ifdefined\ANON
+\newcommand{\repo}{\url{https://www.dropbox.com/sh/v8ct0un8x7loi3m/AAB6op3fOWCp9qKEYlFI_Upba?dl=0}}
+\newcommand{\repotamarin}{\textbf{redacted}}
+\newcommand{\repoprl}{\textbf{redacted}}
+\newcommand{\reposimulation}{\textbf{redacted}}
+\else
+\newcommand{\repo}{\url{https://github.com/EricssonResearch/v2x-self-revocation}}
+\newcommand{\repotamarin}{\url{https://github.com/EricssonResearch/v2x-self-revocation/tree/main/proofs}}
+\newcommand{\repoprl}{\url{https://github.com/EricssonResearch/v2x-self-revocation/tree/main/prl}}
+\newcommand{\reposimulation}{\url{https://github.com/EricssonResearch/v2x-self-revocation/tree/main/simulation}}
+\fi
+
+
+\ifdefined\SUBMISSION
+\usepackage[disable]{todonotes}
+\else
+\usepackage[textsize=footnotesize]{todonotes}
+\presetkeys{todonotes}{fancyline}{}
+\setlength{\marginparwidth}{1.3cm}
+\setlength{\marginparsep}{3pt}
+\fi
+
+\newcommand{\christoph}[1]{\todo[color=orange!20]{\textbf{Christoph:} #1}}
+\newcommand{\eddy}[1]{\todo[color=yellow]{\textbf{Eddy:} #1}}
+\newcommand{\fritz}[1]{\todo[color=blue!20]{\textbf{Fritz:} #1}}
+\newcommand{\gianluca}[1]{\todo[color=red!20]{\textbf{Gianluca:} #1}}
+\newcommand{\jt}[1]{\todo{\textbf{JT:} #1}}
+\newcommand{\karl}[1]{\todo[color=gray!20]{\textbf{Karl:} #1}}
+
+\usepackage{acronym}
+\usepackage{enumerate}
+\usepackage{subcaption}
+\usepackage{pgfplots}
+\pgfplotsset{
+    width=5cm, 
+    legend style={
+        font=\footnotesize,
+        %rounded corners=2pt
+    },
+    compat=newest
+}
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{2212}{−}
+\usepgfplotslibrary{groupplots,dateplot}
+\usetikzlibrary{patterns,shapes.arrows}
+% timeline diagram
+\usetikzlibrary{decorations.pathreplacing,calligraphy}
+
+\usepackage[cmex10]{amsmath}
+\usepackage{url}
+\usepackage{tabularx}
+\usepackage{fontawesome}
+
+%\titleformat{\paragraph}[runin]
+%{\bfseries}{\theparagraph}{1em}{}
+
+\newtheorem{req}{Requirement}
+\newtheorem{defn}{Definition}
+\newtheorem{prop}{Property}
+
+\usepackage[capitalize]{cleveref}
+\crefname{figure}{Fig.\@}{Figs.\@}
+\Crefname{figure}{Fig.\@}{Figs.\@}
+\crefname{table}{Tab.\@}{Tabs.\@}
+\Crefname{table}{Tab.\@}{Tabs.\@}
+\crefname{section}{Sect.\@}{Sects.\@}
+\Crefname{section}{Sect.\@}{Sects.\@}
+\crefname{req}{Req.\@}{Reqs.\@}
+\Crefname{req}{Req.\@}{Reqs.\@}
+
+\usepackage{paralist}
+\usepackage{crossreftools}
+
+\usepackage{fix-cm} % not needed if not using Computer Modern
+
+\DeclareMathAlphabet{\mathsfit}{T1}{\sfdefault}{\mddefault}{\sldefault}
+\SetMathAlphabet{\mathsfit}{bold}{T1}{\sfdefault}{\bfdefault}{\sldefault}
+
+\usepackage{listings}
+\lstdefinelanguage{Tamarin}{
+  keywords={lemma,All,Ex,not,rule, restriction},
+  keywordstyle = {\bfseries},
+  otherkeywords={&,==>,.,=,<,>},
+  comment=[l]{//},
+  morecomment = [s]{/*}{*/},
+  morestring=*[d]{'},
+  columns=fullflexible
+}
+
+\lstdefinestyle{mystyle}{
+    inputpath=listings,
+    commentstyle=\color{teal},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{purple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\hyphenation{pseu-do-nym}
+\hyphenation{pseu-do-nyms}
+
+\newcommand{\tamarin}{\textsc{Tamarin}}
+\newcommand{\tamrule}[1]{\texttt{#1}}
+
+\newcommand{\rewire}{\textsc{Rewire}}
+
+% TC functions
+\newcommand{\funcsetup}{\textsc{Setup}}
+\newcommand{\funccreate}{\textsc{Create}}
+\newcommand{\funcjoin}{\textsc{Join}}
+\newcommand{\funcissue}{\textsc{Create}}
+\newcommand{\funcsign}{\textsc{Sign}}
+\newcommand{\funcverify}{\textsc{Verify}}
+\newcommand{\funcheartbeat}{\textsc{Heartbeat}}
+\newcommand{\funcrevokedaa}{\textsc{Revoke}}
+
+% names
+\newcommand{\vehicle}[1]{\emph{$v_{#1}$}}
+\newcommand{\tc}[1]{\emph{$\mathit{TC}_{#1}$}}
+\newcommand{\ps}{\emph{$\mathit{ps}$}}
+
+% functions and variables
+\newcommand{\funcnow}{\emph{$\mathsfit{now}$}}
+\newcommand{\funcgettime}{\emph{$\mathsfit{get\_time}()$}}
+\newcommand{\varnow}{\emph{$\mathsfit{current}$}}
+\newcommand{\funcrevoke}[1]{\emph{$\mathsfit{revoke}(#1)$}}
+\newcommand{\funcrevokepar}[1]{\emph{$\mathsfit{revoke}(#1)$}}
+\newcommand{\funcselfrevoke}[1]{\emph{$\mathsfit{self\_revoke}(#1)$}}
+\newcommand{\funcautorevoke}{\emph{$\mathsfit{auto\_revoke()}$}}
+\newcommand{\funcsignature}[1]{\emph{$\mathsfit{sig}_{\mathsf{RA}}(#1)$}}
+
+% parameters
+%\newcommand{\paramtd}{\emph{$T_{\mathsf{d}}$}}
+\newcommand{\paramtd}{\emph{$\Delta$}}
+\newcommand{\paramtt}{\emph{$T_{\mathsf{v}}$}}
+\newcommand{\paramtr}{\emph{$T_{\mathsf{r}}$}}
+\newcommand{\paramtol}{\emph{$E_{\mathsf{tol}}$}}
+\newcommand{\paramed}{\emph{$T_{\mathsf{e}}$}}
+
+% time values
+% CB: some of these are times (t), others parameters for time periods (T)
+\newcommand{\paramtvv}{\emph{$t_{\mathsf{v2v}}$}}
+\newcommand{\paramthb}{\emph{$t_{\mathsf{hb}}$}}
+\newcommand{\paramtout}{\emph{$t_{\mathsf{out}}$}}
+\newcommand{\paramtrev}{\emph{$t_{\mathsf{rev}}$}}
+\newcommand{\paramtsign}{\emph{$t_{\mathsf{sign}}$}}
+\newcommand{\paramtrel}{\emph{$T_{\mathsf{rel}}$}}
+\newcommand{\paramteff}{\emph{$T_{\mathsf{eff}}$}}
+\newcommand{\paramtprl}{\emph{$T_{\mathsf{prl}}$}}
+%\newcommand{\paramtra}{\emph{$t_{\mathsf{RA}}$}}
+\newcommand{\paramtra}{\emph{$t$}}
+\newcommand{\paramtmsg}{\emph{$t_{\mathsf{msg}}$}}
+
+% epoch values
+% CB: similar here: e = epoch identifier, E = epoch count
+\newcommand{\paramera}{\emph{$e$}}
+\newcommand{\paramevv}{\emph{$e_{\mathsf{v2v}}$}}
+\newcommand{\paramehb}{\emph{$e_{\mathsf{hb}}$}}
+\newcommand{\paramerev}{\emph{$e_{\mathsf{rev}}$}}
+\newcommand{\paramesign}{\emph{$E_{\mathsf{sign}}$}}
+\newcommand{\parameeff}{\emph{$E_{\mathsf{eff}}$}}
+\newcommand{\parameeprl}{\emph{$E_{\mathsf{prl}}$}}
+\newcommand{\paramemsg}{\emph{$e_{\mathsf{msg}}$}}
+
+% Attackers
+\newcommand{\attackerhonest}{\emph{honest}}
+\newcommand{\attackersmart}{\emph{smart}}
+\newcommand{\attackersmarter}{\emph{smarter}}
+\newcommand{\attackerblind}{\emph{blind}}
+\newcommand{\attackersmartprl}{\emph{smart-prl}}
+\newcommand{\attackersmarterprl}{\emph{smarter-prl}}
+\newcommand{\attackerblindprl}{\emph{blind-prl}}
+
+% Simulation parameters
+\newcommand{\simvehicles}{400}
+\newcommand{\simgroups}{20}
+\newcommand{\simattackers}{10\%}
+\newcommand{\simrevocations}{600}
+\newcommand{\simreplayrate}{30\%}
+\newcommand{\simdroprate}{0.4}
+\newcommand{\simdelayrate}{0.4}
+\newcommand{\simcorrectrate}{20\%}
+\newcommand{\simrevocationrate}{10}
+
+% Experimental results
+\newcommand{\simhonestmedian}{17}
+\newcommand{\simsmartmedian}{32}
+\newcommand{\simsmartmin}{24}
+\newcommand{\simsmartmax}{40}
+\newcommand{\simblindmedian}{20}
+\newcommand{\simsmartprlmedian}{20}
+\newcommand{\simsmartprlmin}{1.5}
+\newcommand{\simsmartprlmax}{37.5}

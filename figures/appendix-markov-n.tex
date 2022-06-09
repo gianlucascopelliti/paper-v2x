@@ -1,0 +1,101 @@
+% changed from auto generated plot:
+% width=\columnwidth,
+% legend pos=north west,
+% and escape the % signs in the labels
+% Color order: steelblue88116163 peru20313699 mediumseagreen95157109 indianred1819295
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{lightgray204}{RGB}{204,204,204}
+\definecolor{darkslategray38}{RGB}{38,38,38}
+\definecolor{darkslategray76}{RGB}{76,76,76}
+\definecolor{indianred1819295}{RGB}{181,92,95}
+\definecolor{lavender234234242}{RGB}{234,234,242}
+\definecolor{lightslategray133122170}{RGB}{133,122,170}
+\definecolor{mediumseagreen95157109}{RGB}{95,157,109}
+\definecolor{peru20313699}{RGB}{203,136,99}
+\definecolor{steelblue76114176}{RGB}{76,114,176}
+\definecolor{steelblue88116163}{RGB}{88,116,163}
+
+
+\begin{axis}[
+width=\columnwidth,
+legend pos=north west,
+ylabel= PRL size (99th percentile),
+xlabel= Number of pseudonyms,
+xmajorgrids,
+xmajorticks=true,
+ymajorgrids,
+ymajorticks=true,
+axis background/.style={fill=lavender234234242},
+axis line style={white},
+x grid style={white},
+y grid style={white},
+legend cell align={left},
+legend style={
+fill opacity=0.8,
+draw opacity=1,
+text opacity=1,
+at={(0.03,0.97)},
+anchor=north west,
+draw=lightgray204,
+% fill=lavender234234242
+},
+tick align=outside,
+tick pos=left,
+xmin=370, xmax=1030,
+xtick style={color=black},
+ymin=0.0, ymax=15.5,
+ytick style={color=black}
+]
+\addplot [draw=steelblue88116163, fill=steelblue88116163, mark=*, only marks]
+table{%
+x  y
+400 1
+500 1
+600 1
+700 1
+800 1
+900 1
+1000 1
+};
+\addlegendentry{Scenario 1 - 0\%}
+\addplot [draw=peru20313699, fill=peru20313699, mark=triangle*, only marks]
+table{%
+x  y
+400 7
+500 7
+600 8
+700 9
+800 10
+900 10
+1000 11
+};
+\addlegendentry{Scenario 1 - 20\%}
+\addplot [draw=mediumseagreen95157109, fill=mediumseagreen95157109, mark=square*, only marks]
+table{%
+x  y
+400 4
+500 4
+600 5
+700 5
+800 5
+900 6
+1000 6
+};
+\addlegendentry{Scenario 2 - 0\%}
+\addplot [draw=indianred1819295, fill=indianred1819295, mark=diamond*, only marks]
+table{%
+x  y
+400 8
+500 9
+600 9
+700 10
+800 11
+900 12
+1000 13
+};
+\addlegendentry{Scenario 2 - 20\%}
+\end{axis}
+
+\end{tikzpicture}

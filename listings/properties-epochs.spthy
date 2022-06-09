@@ -1,0 +1,18 @@
+// property (i)
+lemma effective_revocation [heuristic=o "oracle.py"]:
+"All msg ps t #i . MessageAccepted(msg, ps, t)@i ==>
+    Ex tv #j . SystemInitialized(tv)@j & j<i
+    & not (
+        Ex ps2 t_rev #k . RevocationIssued(ps2, t_rev)@k 
+        & GreaterThan(t, t_rev + tv) 
+    )"
+
+// property (ii)
+lemma no_heartbeats_processed_after_tolerance [heuristic=o "oracle.py"]:
+"All prl t_hb t #i . HeartbeatProcessed(<prl,t_hb>, t)@i ==>
+    Ex tv #j . SystemInitialized(tv)@j & j<i
+    & not (
+        Ex ps t_rev #k . RevocationIssued(ps, t_rev)@k
+        & k<i
+        & GreaterThan(t_hb, t_rev + tv) 
+    )"

@@ -1,0 +1,234 @@
+\section{Background}
+\label{chapter:background}
+
+% --------------------------------------------------------------------------
+%\subsection{ITS and V2X Communications}
+\label{background:v2x}
+
+In the EU, performance and security requirements for \ac{ITS} and advanced use
+cases (such as vehicle platooning or remote driving) are laid out
+in~\cite{etsi20171331851400} and~\cite{etsi2020ts1221861620}. For example, it is
+specified that \ac{ITS} need to support ``high connection density for congested
+traffic'' with ``3,100 to 4,300 cars per square kilometer.'' Vehicles in these
+scenarios communicate at rates of up to 50~messages/s with an end-to-end latency
+of no more than 20~ms (platooning), or even via continuous data streams of up to
+25 MBit/s with an end-to-end latency of no more than 5~ms (remote
+driving)~\cite{etsi2020ts1221861620}.
+
+To maintain security in these scenarios, infrastructure and vehicles must
+implement efficient protocols that facilitate credential management, including
+revocation, and signing and verifying message content while upholding privacy
+objectives and legal requirements on data protection. As summarized by Hicks and
+Garcia~\cite{hicks2020vehicular}, the requirements for the management of
+\ac{V2X} credentials involve %the need for
+communicating parties to verify the
+authenticity of messages, guarantee unlinkability, minimize the repercussions of
+a compromise of central trust management systems, and enable revocation of
+vehicles upon the detection of policy violations, malfunction, or malicious
+interaction. Therefore, vehicles must be capable to timely manage the validity
+of credentials, which involves changing their own pseudonym certificates and
+validating those of communicating parties. Importantly, communications and
+security management protocols must also account for extended periods without
+connectivity, where a vehicle is unreachable or powered off.
+
+\noindent\textbf{\emph{Certificate Management and Revocation.}}
+%
+In Europe, the architecture for credential management in \ac{V2X} is defined by
+ETSI~\cite{etsi2021102940,etsi2022102941}, while the US follows the \ac{SCMS}
+design~\cite{brecht2018scms}. In both architectures, \ac{ITS} participants
+possess two types of credentials: %
+%
+\begin{inparaenum}
+    \item \emph{long-term credentials}, for authenticating a vehicle towards the
+    \ac{ITS} infrastructure, and
+    \item \emph{pseudonym credentials} (\emph{pseudonyms} in short), for secure
+    and privacy-preserving peer-to-peer communication, such as \ac{V2V},
+    \ac{V2I}, or \ac{V2P}.
+\end{inparaenum} 
+%
+Long-term credentials can be either private keys stored in secure elements of
+vehicles at manufacture time, or certificates obtained during enrollment with
+the \ac{ITS}. Pseudonyms are typically retrieved from the infrastructure upon
+successful authentication and authorization of a vehicle (via its long-term
+credential), and are usually short-lived (with lifetime of up to
+weeks~\cite{etsi2018tr04103415}) and rotated regularly to prevent vehicle
+tracking.
+
+Revocation aims at excluding a participant from interacting with others. We
+distinguish between \emph{identity-based revocation} and \emph{message-based
+revocation}, which differ in the way that the decision to revoke is made: The
+former is based on a vehicle's \emph{canonical identity}, and is necessary to
+enforce legal/policy requirements (e.g., to have only insured vehicles on the
+road), in case of private-key compromise (e.g., a leak), or when a vulnerability
+affecting a certain component or vehicle vendor becomes public, requiring
+revocation of multiple vehicles at once. The latter, which is the focus of our
+work, is based on peer-to-peer traffic, where a misbehaviour detection system is
+in place to report faulty or malicious messages to a \ac{RA}, which eventually
+mandates the revocation of the vehicle that signed such messages. When a vehicle
+gets revoked, its long-term credentials are blacklisted by the \ac{ITS} in order
+to deny it future requests, e.g., for re-enrollment or for obtaining new
+pseudonyms. Additionally, all current vehicle's pseudonyms should be made
+unusable, to prevent the transmission of malicious messages to other peers. In
+this regard, \ac{SCMS} and ETSI use two opposing strategies, i.e., active and
+passive revocation, respectively (cf.~\cref{related-work}).
+
+\noindent\textbf{\emph{Trusted Execution and DAA.}}
+%
+A common approach to establish a root of trust in distributed systems is by
+relying on \acfp{TC}, such as \acp{TPM} or \acp{TEE}~\cite{maene:hardware},
+which provide the means to securely store and use long-term credentials, perform
+key generation, remote attestation, and sealing.
+%
+Several papers propose the use of trusted components inside vehicles to manage
+cryptographic credentials and increase security and
+privacy~\cite{guette2009vanet,wagan2010vanet,jangid2022towards}.
+%
+Based on the security features provided by \acp{TC}, \acf{DAA} has been
+developed as a privacy-preserving protocol to remotely authenticate a
+system~\cite{brickell2004direct,tpm2015ieee11889}. In difference to ongoing
+standardization efforts in \ac{ITS} and \ac{SCMS}, which rely heavily on
+centralized public key
+infrastructure~\cite{etsi2021102940,etsi2022102941,brecht2018scms}, the
+application of \ac{DAA} in an \ac{ITS} context obsoletes most central PKI by
+relying on secure processing elements (notably \acp{TPM}), which enable a
+decentralized credential management. For example, some \ac{DAA} schemes allow
+vehicles to derive pseudonyms autonomously from long-term credentials
+\cite{whitefield2017privacy,desmoulins2019practical}. These pseudonyms are
+self-certified using \ac{DAA} signatures that can be verified by other \ac{ITS}
+participants. 
+
+\section{Related Work}
+\label{related-work}
+
+Traditional message-based revocation schemes take two opposing directions:
+\emph{Active revocation}, where the information of revoked pseudonyms is
+distributed to vehicles in real time, and \emph{passive revocation}, where
+pseudonyms have a short lifetime and are left to expire. Additionally, recent
+schemes propose a novel approach based on \emph{self-revocation}.
+
+\noindent\textbf{\emph{Active revocation.}}
+%
+Active revocation is employed by \ac{SCMS} and consists in the distribution of
+\acp{CRL}~\cite{ietfcrl} to all vehicles in the network, containing the list of
+pseudonyms that have been revoked and thus should not be trusted. Vehicles use
+this information to decide whether or not to accept or discard a message
+received from other peers. \ac{CRL} updates are issued regularly by the \ac{RA}
+to indicate newly revoked pseudonyms, and must be received as quickly as
+possible by all vehicles to ensure the safety of the system. However, as
+\acp{CRL} grow large over time, the associated computation and communication
+overheads make these mechanisms less suitable for real-time systems. Several
+papers propose optimizations to reduce the size of \acp{CRL} and the
+verification overhead~\cite{simplicio2019acpc,kumar2017binary}, though recent
+surveys show that these optimizations are still far from
+ideal~\cite{wang2020certificate,yoshizawa2022v2x_survey}. The \ac{SCMS} design
+relies on \emph{linkage values} to identify all pseudonyms of a vehicle with a
+single value, effectively reducing the size of the \ac{CRL} but significantly
+increasing the delay to decide whether to accept or not a network
+message~\cite{brecht2018scms}.
+
+\noindent\textbf{\emph{Passive revocation.}}
+%
+As an alternative to active revocation, some schemes propose issuing pseudonym
+certificates that have a fixed and short lifetime, forcing vehicles to request
+new pseudonyms regularly to continue participating in the
+network~\cite{hicks2020vehicular,verheul2019ifal,ahmed2017secure}. Internal
+\acp{CRL} of long-term credentials are used by the infrastructure to deny such
+requests to malicious vehicles, thus negating the need for pseudonym revocation.
+%Here, a resolution mechanism is necessary to link pseudonym certificates to
+%long-term identities of vehicles; However, this would mean that privacy is only
+%guaranteed between vehicles, but not towards the infrastructure. 
+Passive revocation is also adopted in the ETSI standard~\cite{etsi2022102941}.
+
+Since pseudonym certificates are not revoked, vehicles detected as malicious can
+continue their operation until the last of their pseudonyms has expired. As
+such, malicious vehicles still have a non-negligible time window after their
+detection in which they can spread false information and cause safety-related
+incidents~\cite{etsi2018tr04103415}, and has been identified as an open
+issue~\cite{yoshizawa2022v2x_survey}. Thus, to increase security, pseudonym
+lifetimes would need to be quite short. However, with shorter lifetimes and
+increasing participants in the network, the traffic between infrastructure and
+vehicles would increase significantly, along with the risk of Sybil
+attacks~\cite{douceur2002sybil}.
+%
+%In a technical report, ETSI carried out a study on pseudonym change management
+%and rotation strategies based on time, number of signatures, and kilometers
+%travelled \cite{etsi2018tr04103415}. In all cases, it appears that malicious
+%vehicles still have a non-negligible time window after their detection in which
+%they can spread false information and cause safety-related incidents.
+%
+%Existing work \cite{verheul2019ifal} tries to solve this problem by pre-issuing
+%encrypted pseudonym certificates to vehicles. Such certificates can be
+%decrypted and thus activated in the future by un-revoked vehicles via
+%\emph{activation codes} received from the infrastructure. However, while this
+%approach reduces the cost to generate and distribute certificates at runtime,
+%it may increase the effective revocation time of malicious vehicles. For
+%example, activation codes in IFAL \cite{verheul2019ifal} enable all
+%certificates belonging to the same 90-day \emph{epoch}. 
+%
+%Recent work addresses this issue by combining active and passive
+%revocation~\cite{simplicio2019acpc,kumar2017binary}, so that revoked pseudonyms
+%only need to remain in the \ac{CRL} until their expiration time. However, this
+%may still incur non-negligible network and verification overheads for high
+%number of revocations.
+
+\iffalse
+Besides, pre-issuing certificates that are activated later in time requires
+stronger assumptions in terms of how certificates are managed by a vehicle. For
+example, IFAL relies on a fully trusted \ac{OBU} with access to a trusted time
+source to enforce constraints on the usage of certificates, e.g., that each
+certificate is only used for a pre-defined amount of time (e.g., 5 minutes),
+then rotated and never used again.
+\fi 
+
+\noindent\textbf{\emph{Self-revocation.}}
+%
+Some \ac{DAA} protocols adopt a scheme called self-revocation, where revocation
+is performed with the active cooperation of the vehicle to be
+revoked~\cite{whitefield2017privacy,desmoulins2019practical,larsen2021daa}. The
+concept of self-revocation was initially proposed by F\"orster et al. in their
+\rewire{} protocol \cite{forster2015rewire}, as a privacy-preserving revocation
+scheme for vehicular networks that leverage a hardware-based \ac{TC} in
+vehicles.
+%In this scheme, vehicles register to the
+%Issuer when joining the network. After authentication of the \ac{TC},
+%credentials are stored in secure memory, which can be used by the \ac{TC} to
+%generate new pseudonyms independently, avoiding large communication overheads.
+In such a scheme, the \ac{RA} broadcasts an \ac{OSR}, containing the pseudonym
+identifier to be revoked. The idea is that, upon reception of such message, the
+targeted vehicle will detect that the revoked pseudonym is one of its own and
+then proceed with the deletion of all its credentials, such that the vehicle
+will be unable to generate malicious messages any further. This approach
+eliminates the need for \acp{CRL} or short pseudonym lifetimes, providing
+substantial benefits in terms of performance and
+scalability~\cite{angelogianni2023comparative}.
+
+This simple scheme works with the assumption that the \ac{TC} is a trusted
+entity and will behave as expected, i.e., that it will delete the credentials as
+soon as the \ac{OSR} is received. In case such messages are delayed or dropped,
+e.g., due to a network disruption or a malicious host, F\"orster et al.  propose
+the use of \emph{keep-alive messages} that are periodically broadcast by the
+\ac{RA} to vehicles and used to detect network interruptions, causing the
+automatic deletion of all credentials in a \ac{TC} if no messages are received
+for an extended period. However, this approach is described only informally, and
+does not address an attack scenario where only \acp{OSR} are dropped, but
+keep-alive messages are not. The \rewire{} scheme was formally verified in
+\cite{whitefield2017formal}, though the possible disruption of \acp{OSR} was not
+addressed. Furthermore, a similar \emph{heartbeat} mechanism is later proposed
+in subsequent
+work~\cite{whitefield2017privacy,desmoulins2019practical,larsen2021daa}, which
+suffers from the same limitations. Finally, all solutions seem to implicitly
+rely on a notion of trusted synchronized time to check the freshness of
+revocation requests and compute timeouts, but such a feature may not be
+available on all vehicles due to the limitations of current
+technologies~\cite{alder2023about,anwar2019applications}, neither do previous
+papers discuss possible issues related to clock drifting between vehicles and
+the \ac{RA}.
+
+
+%The use of
+%secure processing elements further enables revocation schemes in which a
+%vehicular \ac{TPM} is remotely instructed to purge or deprecate certain
+%credentials, the execution of which can be remotely
+%verified~(e.g.,~\cite{hicks2020vehicular,larsen2021daa}). This allows to make
+%revocation an  efficient and decentralized process, similar to pseudonym
+%generation, which avoids the management and distribution of \acp{CRL}. 

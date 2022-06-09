@@ -1,0 +1,23 @@
+// set initial value to 1
+ rule init_parameters:
+[ ]
+--[ 
+    OnlyOnce('init_parameters')
+]->
+[ TvTmp('1') ]
+
+// non-deterministic increment
+rule increment_Tv:
+[ TvTmp(tv) ]
+--[ 
+]->
+[ TvTmp(tv + '1') ]
+
+// finalize value
+rule Init:
+[ TvTmp(tv) ]
+--[ 
+    OnlyOnce('Init')
+    , SystemInitialized(tv)
+]->
+[ !Parameters(tv) ]

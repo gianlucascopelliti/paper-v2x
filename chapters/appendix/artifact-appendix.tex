@@ -1,0 +1,266 @@
+\section{Artifact Appendix}
+
+This Appendix contains a complete description on the artifacts presented in our
+paper, along with detailed instructions for running the artifacts locally and
+reproducing our results.
+
+\subsection{Description \& Requirements}
+\label{artifact:requirements}
+
+\input{tables/artifact-software.tex}
+
+This section provides all the information necessary to recreate the experimental
+setup to run our artifacts. All experiments can run on a commodity desktop
+machine. For experiment (E2), we provide a scaled-down configuration that can
+still provide meaningful results. See \cref{artifact:evaluation} for more
+details.
+
+\subsubsection{How to access}
+The artifacts are publicly available on Github\footnote{\repo{}}. While the
+\texttt{main} branch contains the latest version of the code, the
+\texttt{ndss-24-artifacts} tag contains the exact version of the code that was
+submitted for review in the artifact evaluation. The latter is also available on
+Zenodo~\cite{supplMaterial}.
+
+\subsubsection{Hardware dependencies}
+Our artifacts can be run on a commodity desktop machine with a x86-64 CPU. To
+ensure that all artifacts run correctly, it is recommended to use a machine with
+at least 8 cores and 16 GB of RAM.
+
+\subsubsection{Software dependencies} 
+A recent Linux operating system is required, preferably one between Ubuntu
+$\geq$ 20.04 and Debian $\geq$ 10. Our artifacts have been tested on Ubuntu
+22.04 LTS (Jammy). Additional dependencies are listed in \cref{tbl:artifact-sw}.
+
+\subsubsection{Benchmarks} 
+None.
+
+\subsection{Artifact Installation \& Configuration}
+\label{artifact:configuration}
+
+We first require that our repository is downloaded to a local folder, e.g., via
+\texttt{git clone}. To install all required dependencies, we then provide an
+\texttt{install.sh} script that can be used by Ubuntu and Debian users to
+install up-to-date versions of the packages listed in \cref{tbl:artifact-sw}.
+Alternatively, such dependencies can be installed manually via official
+channels. Note that we require running the installation script and subsequent
+experiments using a non-root user with \texttt{sudo} privileges.
+
+All artifacts leverage Docker containers for ease of use. However, except for
+experiment (E2), all experiments can be run locally. Additionally, most
+experiments have customizable parameters. In this Appendix, we provide
+instructions for running all experiments with Docker using a fixed set of
+parameters, but our repository contains extensive instructions for customizing
+each experiment.
+
+\subsection{Experiment Workflow}
+
+Our artifacts contain three independent experiments. The first consists in the
+formal verification of our design using the Tamarin prover. The second
+experiment simulates a \ac{V2X} scenario on Kubernetes, where our scheme is
+evaluated under different conditions. The third experiment performs a
+statistical evaluation on the size of \ac{PRL} to assess the scalability of our
+approach.
+
+The proposed workflow runs the three experiments sequentially. Our repository
+contains scripts and a Makefile that can be used to automate all experiments.
+For brevity, this Appendix only illustrates the \texttt{make} commands to run at
+each step, while extensive documentation is provided in our repository.
+
+\subsection{Major Claims}
+
+\begin{itemize}
+    \item (C1): Our scheme guarantees revocation within a deterministic upper
+    bound \paramteff, even in case of delayed or dropped revocation requests.
+    This is proven by experiment (E1), whose results are reported in
+    \cref{section:design-verification}, Appendix~\ref{appendix:tamarin} and
+    \cref{tbl:tamarin-lemmas-main,tbl:tamarin-lemmas-trusted-time}.
+    \item (C2): Our scheme is resilient to severe network malfunctions and
+    delays that may occur in a real-world scenario. Even in these harsh
+    conditions, revocation times are not only within the upper bound proven in
+    C1, but also significantly shorter on average. This is proven by experiment
+    (E2), whose results are reported in \cref{section:eval-sim} and
+    \cref{fig:eval-sim-base}. Additional experiments are described in our Github
+    repository.
+    \item (C3): Our scheme scales well with the number of vehicles and attackers
+    in the network. Additionally, even when choosing a small \paramteff{}, the
+    required network and computational resources are still low. This is proven
+    by experiment (E3), whose results are reported in
+    \cref{section:eval-prl-size}, Appendix~\ref{appendix:markov} and
+    \cref{fig:eval-prl-size,fig:eval-tv,fig:appendix:markov-e,fig:appendix:markov-n}.
+\end{itemize}
+
+\subsection{Evaluation}
+\label{artifact:evaluation}
+
+This section includes all the operational steps and experiments which must be
+performed to evaluate our artifacts and validate our results. In total, all
+experiments require between 30 and 60 human-minutes and around 8 compute-hours.
+We assume that the machine is configured correctly with required dependencies,
+as described in \cref{artifact:requirements,artifact:configuration}. The same
+instructions, along with additional details, are provided in the top-level
+README file of our repository.
+
+\subsubsection{Experiment (E1) - Claim (C1)}
+\label{artifact:proofs}
+[Tamarin proofs] [2 human-minutes + 10 compute-minutes]: The experiment consists
+in using the open-source Tamarin prover tool (version 1.6.1\footnote{The
+recently-released version of Tamarin 1.8.0 is not able to verify our models
+efficiently. We are currently investigating this issue.}) to verify our
+revocation design. Tamarin receives as input our model specification along with
+the properties (\textit{lemmas}) we want to verify, and attempts to verify such
+properties. Our artifacts include two separate models, one that illustrates the
+main design in \cref{chapter:design} and another that illustrates a variation of
+our design where \acs{TC} have a trusted time that is synchronized with the
+\acs{RA} (\cref{section:design-extensions}). See
+\cref{section:design-verification} and Appendix~\ref{appendix:tamarin} for more
+information.
+
+\textit{[Preparation]} In a new shell, go to the \texttt{proofs} folder.
+
+\textit{[Execution]} Firstly, prove the main design, which is called
+\texttt{centralized-time}. The command to run, along with the expected output,
+is provided below.
+
+\begin{lstlisting}[language=bash]
+# Prove the `centralized-time` model (5 minutes)
+# Expected output: 
+# - Tamarin prints a "summary of summaries" at the end
+# - In the summary, all lemmas are marked as "verified"
+# - a `output_centralized.spthy` file under `./out`
+make prove MODEL=centralized-time OUT_FILE=output_centralized.spthy
+\end{lstlisting}
+
+Secondly, prove the variation of our design with trusted time, which is called
+\texttt{distributed-time}. The command to run, along with the expected output,
+is provided below.
+
+\begin{lstlisting}[language=bash]
+# Prove the `distributed-time` model (5 minutes)
+# Expected output: 
+# - Tamarin prints a "summary of summaries" at the end
+# - In the summary, all lemmas are marked as "verified"
+# - a `output_distributed.spthy` file under `./out`
+make prove MODEL=distributed-time OUT_FILE=output_distributed.spthy
+\end{lstlisting}
+    
+\textit{[Results]} Upon completion, Tamarin prints to standard output a summary
+where each lemma is marked either as \emph{verified}, \emph{falsified}, or
+\emph{analysis incomplete}. In our case, the experiment can be considered
+successful if all lemmas are marked as \emph{verified}. The output files
+\emph{output\_\{centralized,distributed\}.spthy}, contain the full proofs
+computed by Tamarin.
+
+\subsubsection{Experiment (E2) - Claim (C2)}
+\label{artifact:simulations}
+[Simulations] [20-30 human-minutes + 4.5-5 compute-hours]: The experiment
+consists in simulating a \acs{V2X} edge area with a number of vehicles that
+interact with each other, some of them being malicious. The goal of this
+simulation is collecting data on revocation times for malicious vehicles, and
+analyzing their distribution compared to different scenarios and attacker
+levels. See \cref{section:eval-sim} for more information. The simulation runs on
+a Kubernetes cluster: Our experiments have been carried out on a large cluster
+with 8 nodes, spawning 400 vehicles and with a total simulation time of around
+32 hours. For the artifact evaluation, however, we propose a \emph{scaled-down}
+configuration that can run locally on a Minikube instance and spawns 50
+vehicles, with a total simulation time of around 4 hours. We believe that this
+configuration is still acceptable since it only affects the quantity of gathered
+data (i.e., number of revocations and revocation times). The output plots will
+therefore be comparable to the figures in our paper, although less data will
+produce less outliers. Besides, given that there is a certain degree of
+randomicity (due to simulated network conditions), it is impossible to reproduce
+\emph{exactly} the same results that are shown in the paper: Each simulation,
+therefore, will produce slightly different box plots.
+
+\textit{[Preparation]} In a new shell, go to the \texttt{simulation} folder. Run
+the commands below in sequence to set up a new Minikube cluster and build our
+application.
+
+\begin{lstlisting}[language=bash]
+# Create a new Minikube instance (1-5 minutes)
+# Expected output:
+# - A success message from Minikube
+# - kubectl works correctly: try running `kubectl get nodes`
+make run_minikube
+
+# Build application from source (3 minutes)
+# Expected output: No error messages
+make build_minikube
+\end{lstlisting}
+
+\textit{[Execution]} To run all simulations at once, run the command below. Our
+scripts will autonomously manage each simulation and collect all data.
+
+\begin{lstlisting}[language=bash]
+# Run all simulations (4.5-5 hours)
+# Expected output:
+# - a `simulations` folder created. `simulations/scenarios` contain one file for each run (16 in total)
+# - (after 1 minute since start) the log file `simulations/out.log` does not show errors and is "SLEEPING"
+# - (after 2-3 minutes since start) `kubectl -n v2x get pods` shows all pods in "Running" state
+# - (after 4.5-5 hours since start) the log file `simulations/out.log` shows "ALL DONE" as last message
+# - (after 4.5-5 hours since start) the `simulations/results` folder contains one file for each run (16 in total)
+make run_simulations_background CONF=conf/ae.yaml
+\end{lstlisting}
+
+\textit{[Results]} Assuming that all simulations have been successful, the plots
+can be generated by running \texttt{make plot\_all}. The results can be then
+found in the \emph{simulations/figs} folder. Scenario A1 corresponds to
+\cref{fig:eval-sim-base}, while the other scenarios are described in our Github
+repository.
+
+\subsubsection{Experiment (E3) - Claim (C3)}
+\label{artifact:prl}
+[Size of the \acs{PRL}] [10-20 human-minutes + 2.5-3.5 compute-hours]: The
+experiment consists in creating a statistical model for the size of the
+\ac{PRL}, where the process of adding and removing pseudonyms can be
+approximated to a Markov model. Then, based on this model, we plot the expected
+\ac{PRL} sizes in terms of percentiles of all possible states, using different
+parameters such as the number of pseudonyms, the time each pseudonym needs to
+stay in the \ac{PRL} (\paramtprl{}) and the share of attackers in the network.
+See \cref{section:eval-prl-size} and Appendix~\ref{appendix:markov} for more
+information.
+
+\textit{[Preparation]} In a new shell, go to the \texttt{prl} folder.
+
+\textit{[Execution]} All the data and plots can be computed with one single
+command: \texttt{make all}. Alternatively, each plot can be computed separately
+according to the instructions below.
+
+\begin{lstlisting}[language=bash]
+# probabilities and expected revocations (1-5 seconds)
+# Expected output: results printed to standard output
+make probabilities
+
+# Fig. 15: transition graph (1-5 seconds)
+# Expected output:
+# - no errors printed to standard output
+# - `tikz-graph.tex` plot under `./plots`
+make tikz
+
+# Fig 6: Series over different probabilities (15-20 min)
+# Expected output: 
+# - no errors printed to standard output
+# - plots `p-plot_n800_e30.{tex,png}` under `./plots`
+make p-plot
+
+# Fig. 16: Series over different number of pseudonyms (25-35 min.)
+# Expected output:
+# - no errors printed to standard output
+# - plots `n-plot_e30.{tex,png}` under `./plots`
+make n-plot
+
+# Fig. 17: Series over different T_prl (90-140 minutes)
+# Expected output:
+# - no errors printed to standard output
+# - plots `t-plot_n800.{tex,png}` under `./plots`
+make t-plot
+
+# Fig. 7: Generate distribution for Tv (15-20 minutes)
+# Expected output:
+# - no errors printed to standard output
+# - plots `tv-distribution.{tex,png}` under `./plots`
+make tv-distribution
+\end{lstlisting}
+
+\textit{[Results]} Assuming that all commands have succeeded, all plots can be
+found in the \emph{plots} folder.

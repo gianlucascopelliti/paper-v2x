@@ -1,0 +1,99 @@
+\section{Tamarin Models}
+\label{appendix:tamarin}
+
+This appendix extends \cref{section:design-verification}, providing more details
+on how we translated our design to \tamarin{} and how we captured the properties
+of our design. Here, we also discuss our variant where a trusted time source in
+the \ac{TC} is available (cf.~\cref{section:design-extensions}).
+
+\subsection{Mapping our Design to \tamarin{}}
+
+To map our design to Tamarin, we used only six main rules:
+%
+\begin{itemize}
+    \item \tamrule{RA\_generate\_heartbeat}: This rule takes as input the
+    current time and \ac{PRL} and produces a new \ac{HB} as output, signed
+    with the \ac{RA}'s private key. The \ac{HB} is also sent out to the network
+    channel, and an action fact \tamrule{HeartbeatGenerated(HB)} is produced.
+    This rule can only be executed once per \ac{PRL} and time step to reduce
+    the number of states, since multiple execution with the same parameters
+    would generate the same \ac{HB}, which is not relevant in our model since
+    \tamarin{} already allows replays of network messages.
+    \item \tamrule{RA\_issue\_revocation}: Taking as input the current
+    time, \ac{PRL}, and a pseudonym's public key, this rule generates a
+    new \ac{PRL} by adding the pseudonym to the list and incrementing the
+    sequence number by one. We added a restriction to revoke each pseudonym only
+    once. After execution, the action fact \tamrule{RevocationIssued(ps, t)} is
+    generated.
+    \item \tamrule{TC\_get\_pseudonym}: This rule allows the \ac{TC} to obtain a
+    new pseudonym credential. How exactly this credential is obtained (e.g., via
+    a communication to the infrastructure) is outside of our scope; What is
+    important in our model is that the \ac{TC} can obtain and use an arbitrary
+    number of pseudonyms. The only restriction of this rule is to ensure that
+    only non-revoked \acp{TC} can obtain new pseudonyms
+    (cf.~\cref{req:pseudonym}).
+    \item \tamrule{TC\_process\_heartbeat}: The \ac{TC} processes a \ac{HB}
+    taken as input from the channel. Restrictions ensure that the received
+    \ac{HB} has a valid signature and timestamp. In addition, the \ac{TC} has to
+    check whether to perform self-revocation or not. To do so, we divided this
+    rule in two mutually-exclusive rules that produce different results: if any
+    of the \ac{TC} pseudonyms is in the \ac{PRL}, the action fact
+    \tamrule{Revoked(t)} is produced, otherwise it is not. Either way, a
+    \tamrule{HeartbeatProcessed(HB,t)} action fact are produced, along with a
+    new \tamrule{!Time(t\_hb)} persistent fact to synchronize the \ac{TC} time.
+    \item \tamrule{TC\_sign\_message}: The \ac{TC} generates a new \ac{V2V}
+    message signed with a pseudonym's private key. It takes the latest time as
+    input, while restrictions ensure that the TC has not been previously revoked
+    (i.e., the \tamrule{Revoked(t)} action fact does not exist). The rule
+    produces a signed timestamped message and sends it to the out channel. A
+    \tamrule{Signed(msg,ps)} action fact is produced as well.
+    \item \tamrule{process\_message}: This rule models a generic third entity
+    that receives a \ac{V2V} message from network and verifies it. If the
+    signature is valid and the message is fresh, a
+    \tamrule{MessageAccepted(msg,ps,t)} action fact is generated.
+\end{itemize}
+
+\subsection{Trusted Time Source in \acp{TC}}
+
+\begin{figure}
+  \centering
+    \lstinputlisting[language=Tamarin]{properties-time.spthy}
+  \caption{Properties of our design with a trusted time source in \ac{TC}
+  translated to \tamarin{} lemmas.}
+  \label{listing:tamarin-lemmas-time}
+\end{figure}
+
+The design that models a trusted time source in \ac{TC} comes with a major
+difference, i.e., that \ac{TC} and \ac{RA} use the same \tamrule{!Time} facts.
+That is, this means that their clock is perfectly synchronized, and the \ac{TC}
+does not need to process \acp{HB} to advance its internal time.
+
+Table~\ref{tbl:tamarin-lemmas-trusted-time} provides the full list of lemmas
+used in this variant, most of which are analogous to the main model. The main
+difference is that we added three \emph{reusable lemmas}, i.e., lemmas that
+\tamarin{} can leverage to prove other lemmas. This was helpful since we
+experienced that the two proof lemmas were harder to verify efficiently than in
+our main model. By defining additional lemmas marked as \tamrule{reuse}, we
+could instead build efficient proofs, allowing \tamarin{} to terminate in only a
+few minutes.
+
+
+\cref{listing:tamarin-lemmas-time} shows the proof properties of this model. Two
+are the main differences compared to the main model: First, the
+\tamrule{effective\_revocation} lemma can now directly prove our first property
+to calculate the exact value for \paramteff. Indeed, we now assume that all
+\acp{TC} are perfectly synchronized with the \ac{RA} time, hence the revocation
+time is now absolute and comes at $\paramtrev + 2\paramtt$. Second, thanks to
+internal timeouts in \ac{TC}, we can have a stronger proof for the second
+property, saying that not only does the \ac{TC} not process \acp{HB} generated
+after $\paramtrev{} + \paramtt{}$, but also that the \ac{TC} cannot perform
+\emph{any} operations after that time because the automatic revocation timeout
+would be triggered. To prove this, we defined an additional rule called
+\tamrule{TC\_do\_operation}, which models a generic operation performed by the
+\ac{TC} via the \tamrule{NewOperation(t)} action fact. This is then used in
+\tamrule{no\_operations\_after\_timeout} to prove that there cannot be
+\tamrule{NewOperation(t)} action facts with a value for $t$ bigger than
+$\paramtrev + \paramtt$.
+
+\input{tables/lemmas-trusted-time.tex}
+

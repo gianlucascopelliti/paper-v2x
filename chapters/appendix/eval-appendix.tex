@@ -1,0 +1,70 @@
+\section{Complete Simulation Results}
+\label{appendix:simulation}
+
+\input{tables/scenarios.tex}
+
+\begin{figure}[t]
+    %\centering
+    \hspace*{-0.3cm}
+    \resizebox{1.05\linewidth}{!} {
+      \input{figures/eval-simulation.tex}
+    } \caption{Simulation results for scenario A1.}
+    \label{fig:eval-sim-a1}
+\end{figure}
+
+\begin{figure}[t]
+    %\centering
+    \hspace*{-0.3cm}
+    \resizebox{1.05\linewidth}{!} {
+      \input{figures/appendix-sim-a2.tex}
+    } \caption{Simulation results for scenario A2.}
+    \label{fig:eval-sim-a2}
+\end{figure}
+
+\begin{figure}[t]
+    %\centering
+    \hspace*{-0.3cm}
+    \resizebox{1.05\linewidth}{!} {
+      \input{figures/appendix-sim-b1.tex}
+    } \caption{Simulation results for scenario B1.}
+    \label{fig:eval-sim-b1}
+\end{figure}
+
+\begin{figure}[t]
+    %\centering
+    \hspace*{-0.3cm}
+    \resizebox{1.05\linewidth}{!} {
+      \input{figures/appendix-sim-b2.tex}
+    } \caption{Simulation results for scenario B2.}
+    \label{fig:eval-sim-b2}
+\end{figure}
+
+We ran simulations for each of the scenarios described in
+\cref{tbl:eval-scenarios}. Results are depicted in
+\cref{fig:eval-sim-a1,fig:eval-sim-a2,fig:eval-sim-b1,fig:eval-sim-b2}.
+
+Recall from \cref{section:eval-sim} that each value of the boxes represents the
+time between the revocation of \ps{} (\funcrevokedaa{} event) and the last
+\ac{V2V} message signed with \ps{} that was verified by a non-malicious \ac{TC}
+(\funcverify{} event). The latter time represents the \emph{effective revocation
+time} for that particular pseudonym \ps. The box plots give the distribution of
+such values, obtained aggregating more than 600 revocations, filtering out
+negative values.
+
+The figures show one significant difference between the main design (A1 and A2)
+and the extension with a local trusted time source (B1 and B2): While in the
+former most revocations are effective around or before \paramtt{}, in the latter
+attackers are able to postpone revocation up until \paramteff{} in some cases,
+i.e., it appears easier to reach the upper bound, especially for powerful
+attackers such as the \attackersmart{} one. This is due to the fact that, while
+in the main design revoked \acp{TC} cannot synchronize their time since
+\paramtrev, with a local time source \acp{TC} can still advance their internal
+time up until $\paramtrev + \paramtt$, before triggering the automatic
+revocation logic. That is, in the latter case a revoked \ac{TC} is able to
+generate ''more fresh'' \ac{V2V} messages, which can be processed by other
+\acp{TC} later in time.
+
+This peculiarity suggests that a local trusted time source negatively affects
+the revocation time. While this may be true in the average case, it still does
+not affect the worst-case effective revocation time \paramteff, as shown in the
+figures.

@@ -1,0 +1,54 @@
+\begin{table}
+\renewcommand{\arraystretch}{1.1}
+  \centering
+  % \resizebox{\columnwidth}{!}{
+
+    \begin{tabular}{ | c | l | }
+      \hline
+      Variable        & Description\\
+    \hline
+    \hline
+    \multicolumn{2}{|l|}{\textit{Core parameters}} \\
+    \hline
+    \paramteff       & Effective revocation time\\
+    \hline
+    \paramtprl       & Minimum time in \acs{PRL} for safe revocation  \\
+    \hline
+    \multicolumn{2}{|l|}{\textit{Time parameters}} \\
+    \hline
+    \paramtt        & Validity period for timestamps  \\
+    \hline
+    $t$             & Current time at \acs{RA} \\
+    \hline
+    \funcnow        & Current \acs{TC} time \\
+    \hline
+    \paramtvv       & Timestamp sent in a \acs{V2V} message   \\
+    \hline
+    \paramthb       & Timestamp sent in a \ac{HB}   \\
+    \hline
+    \paramtrev        & Time of revocation issued by the \acs{RA}   \\
+    \hline
+    $t_{\mathrm{rcv}}$  & Time \acs{TC} receives message with revoked pseudonym  \\
+    \hline
+    % \paramtra         &    \\
+    % \hline
+    % \multicolumn{2}{|l|}{\textit{Attackers}} \\
+    % \hline
+    % \attackerhonest       &    \\
+    % \hline
+    % \attackersmart        &    \\
+    % \hline
+    % \attackersmarter        &    \\
+    % \hline
+    % \attackerblind        &    \\
+    % \hline
+  \end{tabular}
+  % }
+  \vspace{0.2cm}
+  \caption{ List of all variables utilized in our design. }
+  \label{tbl:eval-variables}
+  %\vspace{-5mm}
+\end{table}
+%
+
+

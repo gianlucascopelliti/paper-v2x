@@ -1,0 +1,30 @@
+\section{Summary \& Conclusions}
+%
+Revocation of credentials and pseudonymous identities is a critical aspect
+of security and trust management in \ac{V2X} systems, necessary to prevent
+malicious actors from manipulating \ac{V2X} communication for personal gain
+or to harm people and infrastructure. In this paper, we
+present and evaluate a self-revocation scheme that addresses scalability and
+security issues of existing approaches, and we formally prove that
+revocation in our scheme cannot be bypassed and completes with a
+configurable upper time bound.
+%
+Furthermore, our approach is compatible with recent standardization efforts in
+the ETSI framework in Europe and the security credential management system in
+the US, and also with privacy-preserving pseudonym schemes that rely on Direct
+Anonymous Attestation.
+%
+Compared to other solutions, our design requires a very limited communication
+bandwidth and we argue that the distributed nature of our scheme reduces
+computational resource utilization, specifically at the infrastructural layer.
+We show that our approach scales well to large numbers of revocations and allows
+for revocation times in the order of seconds, outperforming even short-lived
+pseudonyms. We conclude that approaches that leverage trusted computing
+technologies, such as ours, come with improved scalability and performance
+characteristics that warrant inclusion in future standardization efforts in
+application scenarios that deal with large numbers of participants and critical
+low-latency communications, beyond \ac{V2X} and \ac{ITS}. Future work needs to
+investigate privacy-preserving solutions to block malicious actors from
+re-joining \ac{ITS} networks after revocation, without incurring availability
+issues for well-behaving actors when losing connectivity.
+

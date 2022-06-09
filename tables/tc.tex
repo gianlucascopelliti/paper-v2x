@@ -1,0 +1,41 @@
+\begin{table}
+\renewcommand{\arraystretch}{1.5}
+  \centering
+  % \resizebox{\columnwidth}{!}{
+
+    \begin{tabular}{ | c | p{5.9cm} | }
+      \hline
+      Function          & Description\\
+    \hline
+    \hline
+    \funcjoin{}         & The \acs{TC} authenticates to the Issuer.
+    If the \ac{TC} is genuine and admissible, the Issuer generates a long-term
+    credential which is then stored in \acs{TC} memory.\\
+    \hline
+    \funcissue{}        & A new pseudonym is derived from the long-term
+    credential and stored in \acs{TC} memory.\\
+    \hline
+    \funcsign{}         & Upon request from the \acs{OBU}, a \acs{V2V} message
+    is signed using one of the \acs{TC} pseudonyms, along with additional
+    metadata such as a timestamp.\\
+    \hline
+    \funcverify{}       & Given a \acs{V2V} message as input, the \acs{TC}
+    checks its authenticity and freshness, returning either true (message valid)
+    or false (message not valid).\\
+    \hline
+    \funcheartbeat{}    & Given a \acs{HB} as input, the \acs{TC} checks its
+    authenticity and freshness, then inspects the \acs{PRL} and revokes any of
+    its credentials that are on the list.\\
+    \hline
+  \end{tabular}
+  % }
+  \vspace{0.2cm}
+  \caption{ High-level description of the main \acs{TC} functions used in our
+  design. The \funcheartbeat{} function replaces \funcrevokedaa{} in earlier
+  \ac{DAA} schemes. }
+  \label{tbl:tc-functions}
+  %\vspace{-5mm}
+\end{table}
+%
+
+

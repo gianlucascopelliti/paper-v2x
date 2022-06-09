@@ -1,0 +1,206 @@
+\section{Discussion}
+\label{chapter:discussion}
+
+Our design advances the state of the art by providing several advantages
+compared to related work (\cref{related-work}), which we analyze in
+\cref{section:discussion-comparison}. % Furthermore,
+We discuss compatibility with
+\ac{V2X} protocols such as ETSI, SCMS and \ac{DAA} in
+\cref{section:discussion-compatibility}, and we explain a few corner cases of
+our design in \cref{section:discussion-security}. Finally, we examine privacy
+implications in \cref{section:discussion-privacy}.
+
+\subsection{Qualitative Comparison with Related Work}
+\label{section:discussion-comparison}
+
+This section performs a qualitative analysis of network overhead, verification
+overhead and revocation time of our approach compared with related work.
+
+\noindent\textbf{\emph{Network overhead.}}
+%
+As discussed in \cref{section:eval-tv}, the bandwidth required to transmit
+\acp{HB} is as low as a few kilobits per second in most cases, even considering
+targeted attacks that cause a high number of revocations. This is a significant
+improvement over active revocation schemes that leverage \acp{CRL}, since these
+lists are ever growing and thus their size increases over time. We even
+outperform schemes that combine active and passive revocation to reduce the
+\ac{CRL} size: For example,~\cite{simplicio2019acpc} suggests periods in the
+\ac{CRL} of 3-4 weeks for each pseudonym. Compared to our evaluation
+(cf.~\cref{section:eval-tv}), this is still three to four orders of magnitude
+higher.
+
+Furthermore, unlike passive revocation schemes that require frequent pseudonym
+changes~\cite{hicks2020vehicular}, our design consumes minimal resources at
+runtime. Since \acp{HB} can be broadcast within an edge area, the number of
+messages transmitted by the infrastructure for revocation only depends on the
+number of edge areas and not on the number of vehicles. This makes the system
+extremely scalable, as the \ac{RA} only needs to distribute relatively
+small-sized \acp{HB} at low frequency (cf.~\cref{section:eval-tv}).
+%%  Moreover, the \ac{RA} can generate \acp{HB} periodically and store
+%% them in memory, so that pulling a \ac{HB} can be processed with extremely low
+%% latency.
+
+\noindent\textbf{\emph{Verification overhead.}}
+%
+Active revocation schemes incur some latency during the verification of \ac{V2V}
+messages to check the revocation status of pseudonyms. Even though some
+improvements exist to either reduce the \ac{CRL} size or optimize the
+verification time, such schemes still cause a non-negligible overhead
+(\cref{related-work}). Our design, instead, does not require any additional
+verification overhead except for processing \acp{HB}, which are received more
+seldomly than \ac{V2V} messages (cf.~\cref{section:eval-tv}). Thus, the overhead
+for the \ac{TC} should be comparable to passive revocation schemes. % Although
+In
+\cref{section:design-extensions} we propose to use the \ac{PRL} to perform
+active revocation, which is considered an \emph{optional} feature that can be
+enabled only when the \ac{PRL} is small enough, which we demonstrated to be true
+in most cases (\cref{section:eval-prl-size}).
+
+\noindent\textbf{\emph{Revocation time.}}
+%
+Compared to active revocation, our design provides comparable results in the
+average revocation time, especially when leveraging the extensions discussed in
+\cref{section:design-extensions} and evaluated in \cref{section:eval-sim}.
+However, active revocation does not have an upper bound on the effective
+revocation time, as some vehicles may receive \ac{CRL} updates with
+unpredictable delay. Besides, our scheme outperforms passive revocation since a
+rotation of pseudonyms by the infrastructure every few minutes is infeasible
+\cite{hicks2020vehicular}, while schemes relying on pre-issued certificates with
+activation codes have a huge gap between revocation and actual removal of
+malicious actors from the network \cite{verheul2019ifal,simplicio2019acpc}.
+
+\subsection{Compatibility with Existing Protocols}
+\label{section:discussion-compatibility}
+
+\noindent\textbf{\emph{ETSI ITS.}}
+%
+In line with our system model~(cf.~\cref{section:system-model}), vehicles
+following \emph{ETSI TS 102 941}~\cite{etsi2022102941} obtain long-term
+\emph{enrollment credentials} from an Enrollment Authority, after successful
+authentication of their canonical identity. These credentials are then used to
+obtain pseudonymous \emph{authorization tickets} from an Authorization
+Authority. Timestamps are used for replay protection~\cite{etsi2021102940}.
+ETSI~\cite{etsi2022102941} further proposes passive revocation of pseudonyms by
+centrally revoking long-term credentials~(cf.~\cref{chapter:background}). Our
+scheme is applicable here and can largely improve on revocation time and network
+overhead. This, however, requires \acp{TC} in all vehicles.
+
+\noindent\textbf{\emph{SCMS.}}
+%
+Although similar to the ETSI architecture, the \ac{SCMS} scheme employs active
+revocation (cf.~\cref{chapter:background}). Our scheme can entirely replace
+\acp{CRL} in \ac{SCMS} to reduce the network utilization and nullify the
+verification overhead that vehicles incur when processing \ac{V2V} messages,
+which may be high due to the use of linkage values in the
+\ac{CRL}~\cite{brecht2018scms}. Analogously to ETSI, the design of \ac{SCMS}
+would need to include \acp{TC}.
+
+\noindent\textbf{\emph{DAA.}}
+%
+On the academic side, \ac{DAA}-based protocols have been proposed as an approach
+for pseudonym generation with strong privacy
+properties~(cf.~\cref{chapter:background}). Vehicles use a \funcjoin{} protocol
+to enroll, authenticating themselves via attestation to receive a long-term
+credential. To obtain pseudonym certificates, some protocols require
+communication with an Authorization Authority~\cite{hicks2020vehicular}; others
+allow \acp{TC} to derive pseudonyms autonomously via an \funcissue{}
+protocol~\cite{whitefield2017privacy,desmoulins2019practical}. While many
+\ac{DAA} protocols do not explicitly discuss replay protection, we argue that
+\cref{eq:valid-v2v-generic} is still a requirement of the \ac{V2X} network, and
+thus provided. Under this assumption, even \ac{DAA} protocols are compatible
+with our revocation scheme.
+
+\ac{DAA} protocols that already propose self-revocation can benefit from our
+design by having stronger guarantees on revocation time. However, protocols
+where \acp{TC} derive pseudonyms
+directly~\cite{whitefield2017privacy,desmoulins2019practical} might not satisfy
+\cref{req:revoked} because the infrastructure cannot map pseudonyms to long-term
+identities, and therefore revoked vehicles might be able to re-enroll the
+network. While this has clear benefits in terms of privacy, it raises security
+concerns (cf.~\cref{section:discussion-privacy}).
+
+\noindent\textbf{\emph{Applicability beyond \ac{V2X}.}}
+%
+Our revocation scheme can be generalized to revoke \emph{any} type of
+credential. Hence, it may be applied to other use cases, e.g., in scenarios
+where
+\begin{inparaenum}
+\item real-time communication requirements hamper the use of classic revocation
+  checks,
+\item users may generate pseudonymous credentials for enhanced privacy
+  w.r.t.~peers or the infrastructure, or
+\item revocation needs to be fast and reliable to avoid serious damage by bad
+  actors.
+\end{inparaenum}
+V2X networks check all boxes but we see benefits for, e.g., smart
+cities, direct mobile-to-mobile communication, and other peer-to-peer
+applications.
+
+\subsection{Security Considerations}
+\label{section:discussion-security}
+
+\noindent\textbf{\emph{Vehicles powered off.}}
+%
+Vehicles that are temporarily powered off cannot process any \acp{HB}, meaning
+that potential revocations may be missed without the \ac{TC} noticing, and
+without being able to execute automatic revocation. Thus, it is important to
+persist the value of the last \paramthb{} processed by a \ac{TC}, such that
+vehicles would remain synchronized when powered off for a short time. For longer
+offline periods, instead, vehicles would need to re-synchronize with the
+infrastructure and, simultaneously, check their revocation status.
+
+\noindent\textbf{\emph{Self-identification of pseudonyms.}}
+%
+The underlying assumption of our revocation scheme is that,  to perform
+self-revocation, a \ac{TC} is able to identify its own pseudonym certificates
+within the \ac{PRL}. However, it may not be always possible to do so when the
+\ac{TC} occasionally deletes some pseudonyms from memory, e.g., due to pseudonym
+rotation. A trivial solution to this problem would be to never delete any
+pseudonyms, though this may not be possible in resource-constrained environments
+(e.g., \acp{TPM}). Previous work~\cite{forster2015rewire,whitefield2017formal}
+discusses a more efficient solution that leverages cryptographic tokens,
+allowing \acp{TC} to safely delete their pseudonyms.
+
+\noindent\textbf{\emph{Denial-of-Service Attacks.}}
+%
+An attacker may cause vehicles to get de-synchronized via network attacks,
+preventing them from processing \acp{HB}. This could, e.g., be achieved by
+jamming all wireless network activity close to a victim. While not being
+practical at scale, jamming attacks would likely disconnect the victim from the
+network regardless of the credential management mechanisms employed, and may
+thus require re-enrollment or other connection management steps. Therefore, such
+attacks likely do not cause additional harm when our approach is used.
+
+\subsection{Privacy Discussion}
+\label{section:discussion-privacy}
+
+Privacy requirements in V2X include that adversaries cannot link a pseudonymous
+signature to a canonical identity or other pseudonyms, or observe the use of
+specific network resources~\cite{whitefield2017privacy, etsi2022102941,
+yoshizawa2022v2x_survey}. Aside from adversarial interactions, data minimization
+towards the infrastructure is also a design goal of V2X systems to minimize the
+overall attack surface~\cite{brecht2018scms}.
+
+Our design does not compromise the privacy provisions of the underlying
+certificate management steps -- enrollment, pseudonym generation, etc. --
+because \acp{HB} only contain public information and an adversary receiving
+\acp{PRL} only sees a list of pseudonyms (similarly to traditional \acp{CRL})
+but learns no further information about specific vehicles, nor can they link
+pseudonyms to each other. Learning when specific pseudonyms are considered
+compromised by the infrastructure is unavoidable, and breaking the underlying
+cryptographic primitives is outside of our attacker model.
+
+However, \cref{req:revoked} and technical standards in
+Europe~\cite{etsi2022102941} and the US~\cite{brecht2018scms} highlight that
+revoked vehicles must no be able to re-enroll. This compromises data
+minimization in the V2X infrastructure since it necessitates mapping a pseudonym
+back to the canonical identity or long-term credentials of the vehicle and then
+deny-listing that identity.
+%
+There are DAA-based approaches that preserve unlinkability of pseudonyms towards
+the infrastructure, as \acp{TC} generate pseudonyms
+autonomously~\cite{whitefield2017privacy,desmoulins2019practical}. However, this
+in turn raises security concerns since re-enrollment of revoked vehicles becomes
+feasible. Possible technical solutions to this conundrum depend on the V2X
+protocol and its credential management scheme, as well as the capabilities of
+the TC. Therefore they are out of scope of this work.
